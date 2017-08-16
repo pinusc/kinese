@@ -50,7 +50,7 @@
 
 (defn karacter [arg]
   (println "kn" (count (map #(nth (first (get dict (str %))) 1) (:text arg))))
-  (json-response (into [] (map #(nth (first (get dict (str %) [nil "k"])) 1) (:text arg)))))
+  (json-response (into [] (map #(first (get dict (str %))) (:text arg)))))
 
 (defroutes routes
   (GET "/" [] (loading-page))
