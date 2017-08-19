@@ -40,7 +40,7 @@
            :content "width=device-width, initial-scale=1"}]
    (include-css (if (env :dev) "/css/site.css" "/css/site.min.css")
                 "/css/bulma.css"
-                "https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css")])
+                #_("https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css"))])
 
 (defn loading-page []
   (html5

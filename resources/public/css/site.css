@@ -64,9 +64,17 @@
 
 .kar {
     display: inline-block;
+    border-radius: 25%;
 }
 
 .kar:hover {
     background-color: #eee;
-    border-radius: 25%;
+}
+
+.selected {
+    background-color: orange!important;
+}
+
+.selected span {
+    color: white!important;
 }
