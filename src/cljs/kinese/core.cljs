@@ -31,55 +31,63 @@
      [:div
       [:h1.title.is-1 character]
       [:p.is-size-4 "The definition for this character was not found. Sorry!"]]))
-  ([character string current-def]
-   (fn [character string current-def]
+  ([character definition current-def]
+   (fn [character definition current-def]
      [:div.definition
       (doall (map-indexed (fn [index definition] 
                             [:div {:key index :class (if (= @current-def index) "is-visible" "is-hidden")}
                              [:h1.title.is-1.has-text-centered character]
-                             [:h2.subtitle.is-4.has-text-centered (reduce str (take 2 definition))]
-                             [:div.is-size-4 (for [s (clojure.string/split (nth definition 2 nil) #"/")] 
+                             [:h2.subtitle.is-4.has-text-centered (reduce str (:character definition) (:tone definition))]
+                             [:div.is-size-4 (for [s (clojure.string/split (:definition definition) #"/")] 
                                                ^{:key s}  [:p (clojure.string/capitalize s)] )]])
-                          string))
-      [:div.def-buttons {:class (if (> (count string) 1) "is-visible" "is-hidden")}
+                          definition))
+      [:div.def-buttons {:class (if (> (count definition) 1) "is-visible" "is-hidden")}
        [:a.button.is-white {:on-click #(try (swap! current-def dec) (catch js/Object e nil))}
+        "ndef"
         [:span.icon [:i.fa.fa-arrow-left]]]
        [:a.button.is-white {:on-click #(try (swap! current-def inc) (catch js/Object e nil))}
-        [:span.icon [:i.fa.fa-arrow-right]]]
-       ]])
-   ))
+        "pdef"
+        [:span.icon [:i.fa.fa-arrow-right]]]]])))
 
-(defn kar [text tone definition locked?]
-  (when (and tone text definition)
+(defn kar [text definition definition-div locked?]
+  (when (and text definition definition-div)
     (let [current-def (reagent/atom 0)
           this-selected (reagent/atom false)]
-      (set-validator! current-def #(and (>= % 0) (< % (count tone))))
-      (fn [text tone definition locked?]
+      (set-validator! current-def #(or (zero? (count definition)) (and (>= % 0) (< % (count definition)))))
+      (fn [text definition definition-div locked?]
         [:div.kar
          {:class (when @this-selected " selected")
           :on-mouse-over (fn [] 
                            (when-not @locked?
-                             (reset! definition [construct-definition text tone current-def])))
+                             (reset! definition-div [construct-definition text definition current-def])))
           :on-click (fn [] 
                       (swap! locked? not)
                       (when @locked?
                         (reset! this-selected true))
                       (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
-                      (reset! definition [construct-definition text tone current-def])) }
+                      (reset! definition-div [construct-definition text definition current-def])) }
          [:span 
-          {:class (nth gtones (dec (int (nth (first tone) 1))) "nil")} 
+          {:class (nth gtones (dec (int (:tone (first definition)))) "nil")} 
           text]]))))
 
-(defn style [text tones definition]
+(defn style [text definitions definition-div]
   (let [locked? (reagent/atom false)]
-    (into [:p] (map-indexed (fn [tone text] 
-                              [kar text (nth tones tone) definition locked?]) text))))
+    (into [:p] (map-indexed (fn [i text] 
+                              [kar text (nth definitions i) definition-div locked?]) text))))
 
 (defn textarea [raw-text curr content-editable?]
   [:div#textarea.textarea.is-size-3 {:content-editable (not @content-editable?)
                                      :suppressContentEditableWarning true
                                      :on-input #(reset! raw-text (-> % .-target .-innerHTML))}
    @curr])
+
+(defn create-map
+  [raw-text]
+  (for [line raw-text]
+    (for [[character tone definition] line]
+      {:character character
+       :tone tone
+       :definition definition})))
 
 (defn buttons [raw-text curr submit? definition-div]
   [:input#submit-button.button 
@@ -88,7 +96,7 @@
                 (reset! submit? (not @submit?))
                 (if @submit?
                   (POST "/kar" {:params {:text @raw-text}
-                                :handler #(reset! curr (style @raw-text % definition-div))})
+                                :handler #(reset! curr (style @raw-text (create-map %) definition-div))})
                   (reset! curr @raw-text)))
     :value (if @submit? "Change text" "Submit")
     :class (if @submit? "is-primary" "is-success")}])
