@@ -1,0 +1,72 @@
+.definition {
+    position: relative;
+}
+
+.def-buttons {
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+.def-buttons > .button:first-child {
+    float: left;
+}
+
+.def-buttons > .button:last-child {
+    float: right;
+}
+
+.section {
+    position: relative;
+}
+
+#textarea {
+    display: inline-block;
+    /* border: none !important; */
+    /* box-shadow: none !important; */
+    max-height: none;
+    height: auto;
+    min-height: 4em;
+}
+
+[contentEditable=false] {
+    cursor: pointer;
+}
+
+.button {
+    margin-top: 1em;
+    margin: auto;
+}
+
+#submit-button {
+    width: 100%;
+    margin-top: 0.5em;
+}
+
+.first {
+    color: red;
+}
+.neutral {
+    color: black;
+}
+.fourth {
+    color: purple;
+}
+.third {
+    color: blue;
+}
+.second {
+    color: green;
+}
+
+.nil {
+    color: #999;
+}
+
+.kar {
+    display: inline-block;
+}
+
+.kar:hover {
+    background-color: #eee;
+    border-radius: 25%;
+}
