@@ -34,11 +34,12 @@
   ([character string current-def]
    (fn [character string current-def]
      [:div.definition
-      (doall (map-indexed (fn [index definition]
+      (doall (map-indexed (fn [index definition] 
                             [:div {:key index :class (if (= @current-def index) "is-visible" "is-hidden")}
                              [:h1.title.is-1.has-text-centered character]
                              [:h2.subtitle.is-4.has-text-centered (reduce str (take 2 definition))]
-                             [:div.is-size-4 (map #(vector :p (clojure.string/capitalize %)) (clojure.string/split (nth definition 2 nil) #"/"))]])
+                             [:div.is-size-4 (for [s (clojure.string/split (nth definition 2 nil) #"/")] 
+                                               ^{:key s}  [:p (clojure.string/capitalize s)] )]])
                           string))
       [:div.def-buttons {:class (if (> (count string) 1) "is-visible" "is-hidden")}
        [:a.button.is-white {:on-click #(try (swap! current-def dec) (catch js/Object e nil))}
@@ -48,57 +49,75 @@
        ]])
    ))
 
-(defn kar [text tone definition]
+(defn kar [text tone definition locked?]
   (when (and tone text definition)
-    (let [current-def (reagent/atom 0)]
+    (let [current-def (reagent/atom 0)
+          this-selected (reagent/atom false)]
       (set-validator! current-def #(and (>= % 0) (< % (count tone))))
-      [:div.kar
-       {:on-mouse-over (fn [] (reset! definition [construct-definition text tone current-def]))}
-       [:span {:class (nth gtones (dec (int (nth (first tone) 1))) "nil")} text]])))
+      (fn [text tone definition locked?]
+        [:div.kar
+         {:class (when @this-selected " selected")
+          :on-mouse-over (fn [] 
+                           (when-not @locked?
+                             (reset! definition [construct-definition text tone current-def])))
+          :on-click (fn [] 
+                      (swap! locked? not)
+                      (when @locked?
+                        (reset! this-selected true))
+                      (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
+                      (reset! definition [construct-definition text tone current-def])) }
+         [:span 
+          {:class (nth gtones (dec (int (nth (first tone) 1))) "nil")} 
+          text]]))))
 
 (defn style [text tones definition]
-  (into [:p] (map-indexed #(kar %2 (nth tones %1) definition) text)))
+  (let [locked? (reagent/atom false)]
+    (into [:p] (map-indexed (fn [tone text] 
+                              [kar text (nth tones tone) definition locked?]) text))))
 
-(defn textarea [value styled curr content-editable?]
+(defn textarea [raw-text curr content-editable?]
   [:div#textarea.textarea.is-size-3 {:content-editable (not @content-editable?)
                                      :suppressContentEditableWarning true
-                                     :on-input #(reset! value (-> % .-target .-innerHTML))}
+                                     :on-input #(reset! raw-text (-> % .-target .-innerHTML))}
    @curr])
 
+(defn buttons [raw-text curr submit? definition-div]
+  [:input#submit-button.button 
+   {:type "button" 
+    :on-click (fn [] 
+                (reset! submit? (not @submit?))
+                (if @submit?
+                  (POST "/kar" {:params {:text @raw-text}
+                                :handler #(reset! curr (style @raw-text % definition-div))})
+                  (reset! curr @raw-text)))
+    :value (if @submit? "Change text" "Submit")
+    :class (if @submit? "is-primary" "is-success")}])
 
-(defn text-input [definition]
-  (let [value (reagent/atom default-text) 
-        styled (reagent/atom [:p])
+
+(defn text-input [definition-div]
+  (let [raw-text (reagent/atom default-text) 
         curr (reagent/atom [:p "Insert your text here to start..."])
         submit? (atom true)]
     (fn []
       [:div
        [:div.control
-        [textarea value styled curr submit?]]
+        [textarea raw-text curr submit?]]
        [:div.control
-        [:input#submit-button.button {:type "button" 
-                        :on-click (fn [] 
-                                    (reset! submit? (not @submit?))
-                                    (if @submit?
-                                      (POST "/kar" {:params {:text @value}
-                                                    :handler #(reset! curr (style @value % definition))})
-                                      (reset! curr @value)))
-                        :value (if @submit? "Change text" "Submit")
-                        :class (if @submit? "is-primary" "is-success")}]]])))
+        [buttons raw-text curr submit? definition-div]]])))
 
 ;; #(reset! value (-> % .-target .-value style))
 
 (defn home-page []
-  (let [definition (reagent/atom (construct-definition))]
+  (let [definition-div (reagent/atom (construct-definition))]
     (fn []
       [:div
        [header]
        [:section.section 
         [:div.columns
          [:div.column
-          @definition]
+          @definition-div]
          [:div.column
-          [text-input definition]]]]])))
+          [text-input definition-div]]]]])))
 
 (defn about-page []
   [:div [:h2 "About kinese"]
