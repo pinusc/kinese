@@ -22,36 +22,42 @@
 
 (defn construct-definition
   ([]
-   [:div
-    [:h1.title.is-1 "Input your text to start!"]
-    [:p.is-size-4 "The days of tens of tireless dictionary lookups just to understand a short piece of text are long gone! Input your text in the form on the right, and we will look up the characters and the words for you. Batteries included."]])
+   (fn []
+     [:div
+      [:h1.title.is-1 "Input your text to start!"]
+      [:p.is-size-4 "The days of tens of tireless dictionary lookups just to understand a short piece of text are long gone! Input your text in the form on the right, and we will look up the characters and the words for you. Batteries included."]]))
   ([character]
-   [:div
-    [:h1.title.is-1 character]
-    [:p.is-size-4 "The definition for this character was not found. Sorry!"]])
-  ([character string]
-   [:div
-    [:h1.title.is-1 character " (" (reduce str (take 2 string)) ")"]
-    [:p.is-size-4 (nth string 2 nil)]]))
+   (fn [character]
+     [:div
+      [:h1.title.is-1 character]
+      [:p.is-size-4 "The definition for this character was not found. Sorry!"]]))
+  ([character string current-def]
+   (fn [character string current-def]
+     [:div.definition
+      (doall (map-indexed (fn [index definition]
+                            [:div {:key index :class (if (= @current-def index) "is-visible" "is-hidden")}
+                             [:h1.title.is-1.has-text-centered character]
+                             [:h2.subtitle.is-4.has-text-centered (reduce str (take 2 definition))]
+                             [:div.is-size-4 (map #(vector :p (clojure.string/capitalize %)) (clojure.string/split (nth definition 2 nil) #"/"))]])
+                          string))
+      [:div.def-buttons {:class (if (> (count string) 1) "is-visible" "is-hidden")}
+       [:a.button.is-white {:on-click #(try (swap! current-def dec) (catch js/Object e nil))}
+        [:span.icon [:i.fa.fa-arrow-left]]]
+       [:a.button.is-white {:on-click #(try (swap! current-def inc) (catch js/Object e nil))}
+        [:span.icon [:i.fa.fa-arrow-right]]]
+       ]])
+   ))
 
 (defn kar [text tone definition]
-  [:div.kar
-    {:on-mouse-over (fn [] (reset! definition (construct-definition text tone)))}
-    [:span {:class (nth gtones (dec (int (nth tone 1))) "nil")} text]])
-
-(defn surround [text tone definition]
-  (kar text tone definition))
+  (when (and tone text definition)
+    (let [current-def (reagent/atom 0)]
+      (set-validator! current-def #(and (>= % 0) (< % (count tone))))
+      [:div.kar
+       {:on-mouse-over (fn [] (reset! definition [construct-definition text tone current-def]))}
+       [:span {:class (nth gtones (dec (int (nth (first tone) 1))) "nil")} text]])))
 
 (defn style [text tones definition]
-  (into [:p] (map-indexed #(surround %2 (nth tones %1) definition) text)))
-
-(defn get-style [curr value definition]
-  (POST "/kar" {:params {:text value}
-                :handler #(reset! curr (style value % definition))}))
-
-(defn post-data [text]
-  (POST "0.0.0.0:2000/kar" {:params {:text "foo"}
-                            :format :json}))
+  (into [:p] (map-indexed #(kar %2 (nth tones %1) definition) text)))
 
 (defn textarea [value styled curr content-editable?]
   [:div#textarea.textarea.is-size-3 {:content-editable (not @content-editable?)
@@ -70,11 +76,12 @@
        [:div.control
         [textarea value styled curr submit?]]
        [:div.control
-        [:input.button {:type "button" 
+        [:input#submit-button.button {:type "button" 
                         :on-click (fn [] 
                                     (reset! submit? (not @submit?))
                                     (if @submit?
-                                      (get-style curr @value definition)
+                                      (POST "/kar" {:params {:text @value}
+                                                    :handler #(reset! curr (style @value % definition))})
                                       (reset! curr @value)))
                         :value (if @submit? "Change text" "Submit")
                         :class (if @submit? "is-primary" "is-success")}]]])))

@@ -39,7 +39,8 @@
    [:meta {:name "viewport"
            :content "width=device-width, initial-scale=1"}]
    (include-css (if (env :dev) "/css/site.css" "/css/site.min.css")
-                "/css/bulma.css")])
+                "/css/bulma.css"
+                "https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css")])
 
 (defn loading-page []
   (html5
@@ -50,7 +51,7 @@
 
 (defn karacter [arg]
   (println "kn" (count (map #(nth (first (get dict (str %))) 1) (:text arg))))
-  (json-response (into [] (map #(first (get dict (str %))) (:text arg)))))
+  (json-response (into [] (map #(get dict (str %)) (:text arg)))))
 
 (defroutes routes
   (GET "/" [] (loading-page))
