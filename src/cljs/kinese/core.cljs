@@ -43,10 +43,10 @@
                           definition))
       [:div.def-buttons {:class (if (> (count definition) 1) "is-visible" "is-hidden")}
        [:a.button.is-white {:on-click #(try (swap! current-def dec) (catch js/Object e nil))}
-        "ndef"
+        "<"
         [:span.icon [:i.fa.fa-arrow-left]]]
        [:a.button.is-white {:on-click #(try (swap! current-def inc) (catch js/Object e nil))}
-        "pdef"
+        ">"
         [:span.icon [:i.fa.fa-arrow-right]]]]])))
 
 (defn kar [text definition definition-div locked?]
@@ -96,7 +96,7 @@
                 (reset! submit? (not @submit?))
                 (if @submit?
                   (POST "/kar" {:params {:text @raw-text}
-                                :handler #(reset! curr (style @raw-text (create-map %) definition-div))})
+                                :handler #(do (print (get %  "words")) (reset! curr (style @raw-text (create-map (get % "karacters")) definition-div)))})
                   (reset! curr @raw-text)))
     :value (if @submit? "Change text" "Submit")
     :class (if @submit? "is-primary" "is-success")}])
