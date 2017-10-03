@@ -36,7 +36,7 @@
                           (if (= term (ffirst li))
                             (conj (next li) [term (conj (fnext (first li)) [tone definition])])
                             ;(conj (next li) [(first n) (next (first li))])
-                            (conj li [term [tone definition]])))))
+                            (conj li [term [[tone definition]]])))))
                   '()
                   (map
                     #(let [t (next %)]
@@ -45,9 +45,10 @@
 ;(re-seq #".* (.*) \[(\w+)(\d)\] \/(.*)\/\n" txt)))
 
 (def dict (read-dict "cedict_ts.u8"))
+(get dict "山")
+
 (get dict "你好")
 (get dict "你")
-(get dict "好")
 
 (ffirst (first (get dict "过")))
 

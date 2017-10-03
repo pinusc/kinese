@@ -37,7 +37,7 @@
       (doall (map-indexed (fn [index definition] 
                             [:div {:key index :class (if (= @current-def index) "is-visible" "is-hidden")}
                              [:h1.title.is-1.has-text-centered character]
-                             [:h2.subtitle.is-4.has-text-centered (reduce str (:character definition) (:tone definition))]
+                             [:h2.subtitle.is-4.has-text-centered (reduce str (:pinyin definition) (:tone definition))]
                              [:div.is-size-4 (for [s (clojure.string/split (:definition definition) #"/")] 
                                                ^{:key s}  [:p (clojure.string/capitalize s)] )]])
                           definition))
@@ -84,10 +84,18 @@
 (defn create-map
   [raw-text]
   (for [line raw-text]
-    (for [[character tone definition] line]
-      {:character character
+    (for [ [[[pinyin tone]] definition] line]
+    (do 
+      (println "####################")
+      (println line)
+      (println "TY" (type (ffirst line)))
+      (println "PINYIN" pinyin)
+      (println "TONE" tone)
+      (println "DEF" definition)
+      (println "--------------------")
+      {:pinyin pinyin
        :tone tone
-       :definition definition})))
+       :definition definition}))))
 
 (defn buttons [raw-text curr submit? definition-div]
   [:input#submit-button.button 
@@ -96,7 +104,7 @@
                 (reset! submit? (not @submit?))
                 (if @submit?
                   (POST "/kar" {:params {:text @raw-text}
-                                :handler #(do (print (get %  "words")) (reset! curr (style @raw-text (create-map (get % "karacters")) definition-div)))})
+                                :handler #(do (print (get % "words")) (reset! curr (style @raw-text (create-map (get % "karacters")) definition-div)))})
                   (reset! curr @raw-text)))
     :value (if @submit? "Change text" "Submit")
     :class (if @submit? "is-primary" "is-success")}])
