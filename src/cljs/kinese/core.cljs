@@ -65,7 +65,7 @@
                       (when @locked?
                         (reset! this-selected true))
                       (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
-                      (reset! definition-div [construct-definition text definition current-def])) }
+                      (reset! definition-div [construct-definition text definition current-def]))}
          [:span 
           {:class (nth gtones (dec (int (:tone (first definition)))) "nil")} 
           text]]))))
@@ -82,29 +82,27 @@
    @curr])
 
 (defn create-map
+  "Glue function. Flattens a list of maps as the JSON returned by the /kar
+  endpoint so that they are in the form {:definition ... :tone ... :pinyin ...},
+  accepted by the `style` function"
   [raw-text]
   (for [line raw-text]
-    (for [ [[[pinyin tone]] definition] line]
-    (do 
-      (println "####################")
-      (println line)
-      (println "TY" (type (ffirst line)))
-      (println "PINYIN" pinyin)
-      (println "TONE" tone)
-      (println "DEF" definition)
-      (println "--------------------")
-      {:pinyin pinyin
+    (for [{[{tone :tone pinyin :pinyin} & other ] :pronunciation definition :definition} line]
+      {:definition definition
        :tone tone
-       :definition definition}))))
+       :pinyin pinyin})))
 
 (defn buttons [raw-text curr submit? definition-div]
+  "Handles the 'change/submit text' button."
   [:input#submit-button.button 
    {:type "button" 
     :on-click (fn [] 
                 (reset! submit? (not @submit?))
                 (if @submit?
                   (POST "/kar" {:params {:text @raw-text}
-                                :handler #(do (print (get % "words")) (reset! curr (style @raw-text (create-map (get % "karacters")) definition-div)))})
+                                :response-format :json
+                                :keywords? true
+                                :handler #(do (reset! curr (style @raw-text (create-map (:karacters %)) definition-div)))})
                   (reset! curr @raw-text)))
     :value (if @submit? "Change text" "Submit")
     :class (if @submit? "is-primary" "is-success")}])

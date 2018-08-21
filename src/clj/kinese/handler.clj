@@ -13,12 +13,12 @@
           (reduce (fn [li n] 
                     (do 
                         (let [term (first n)
-                              tone (map #(vector (apply str (drop-last %)) (last %)) (string/split (first (fnext n)) #" "))
+                              tone (map #(hash-map :pinyin (apply str (drop-last %)) :tone (last %)) (string/split (first (fnext n)) #" "))
                               definition (fnext (fnext n))]
                           (if (= term (ffirst li))
-                            (conj (next li) [term (conj (fnext (first li)) [tone definition])])
+                            (conj (next li) [term (conj (fnext (first li)) {:pronunciation tone :definition definition})])
                             ;(conj (next li) [(first n) (next (first li))])
-                            (conj li [term [[tone definition]]])))))
+                            (conj li [term [{:pronunciation tone :definition definition}]])))))
                   '()
                   (map
                     #(let [t (next %)]
