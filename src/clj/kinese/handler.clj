@@ -45,12 +45,7 @@
 ;(re-seq #".* (.*) \[(\w+)(\d)\] \/(.*)\/\n" txt)))
 
 (def dict (read-dict "cedict_ts.u8"))
-(get dict "山")
-
-(get dict "你好")
-(get dict "你")
-
-(ffirst (first (get dict "过")))
+(def fnlp (org.fnlp.nlp.cn.CNFactory/getInstance "models"))
 
 (def mount-target
   [:div#app
@@ -92,23 +87,28 @@
               (if can-increment-i
                 (recur (inc i) 1 (assoc res current-str (get dict current-str)))
                 (do (print "FOO") res)))
-            (if can-increment-n 
+            (if can-increment-n  
               (recur i (inc n) res)
               (if can-increment-i
                 (recur (inc i) 1 res)
                 (do (print "BAR") res))))))))
-(getwords default-text)
-;EOF
+
+(defn segment [text]
+  (into [] (.seg fnlp text)))
 
 (defn karacter [arg]
   ;; (println "kn" (count (map #(nth (first (get dict (str %))) 1) (:text arg))))
-  (json-response {:karacters (into [] (map #(get dict (str %)) (:text arg)))
-                  :words (into [] (getwords arg))}))
+  (let [text (:text arg)
+        segmented-text (segment text)]
+    (json-response {:karacters (into [] (map #(get dict (str %)) text)) 
+                    :segmented-text segmented-text
+                    :words (reduce #(assoc %1 %2 (get dict %2)) {} segmented-text)})))
 
 (defroutes routes
   (GET "/" [] (loading-page))
   (GET "/about" [] (loading-page))
   (POST "/kar" [& _ :as {params :params} ] (karacter params))
+  (POST "/seg" [& _ :as {params :params} ] (segment params))
   (resources "/")
   (not-found "Not Found"))
 

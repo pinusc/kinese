@@ -21,7 +21,9 @@
                  [org.clojure/tools.trace "0.7.9"]
                  [cljs-ajax "0.6.0"]
                  [ring-transit "0.1.6"]
-                 [ring-json-response "0.2.0"]]
+                 [ring-json-response "0.2.0"]
+                 [net.sf.trove4j/trove4j "3.0.3"]
+                 [commons-cli "1.2"]]
 
   :plugins [[lein-environ "1.0.2"]
             [lein-cljsbuild "1.1.5"]
@@ -43,7 +45,7 @@
    [:cljsbuild :builds :app :compiler :output-to]]
 
   :source-paths ["src/clj" "src/cljc"]
-  :resource-paths ["resources" "target/cljsbuild"]
+  :resource-paths ["resources" "target/cljsbuild" "resources/fnlp-core-2.1.jar"]
 
   :minify-assets
   {:assets
