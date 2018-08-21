@@ -75,11 +75,11 @@
     (into [:p] (map-indexed (fn [i text] 
                               [kar text (nth definitions i) definition-div locked?]) text))))
 
-(defn textarea [raw-text curr content-editable?]
+(defn textarea [raw-text textarea-value content-editable?]
   [:div#textarea.textarea.is-size-3 {:content-editable (not @content-editable?)
                                      :suppressContentEditableWarning true
                                      :on-input #(reset! raw-text (-> % .-target .-innerHTML))}
-   @curr])
+   @textarea-value])
 
 (defn create-map
   "Glue function. Flattens a list of maps as the JSON returned by the /kar
@@ -92,7 +92,7 @@
        :tone tone
        :pinyin pinyin})))
 
-(defn buttons [raw-text curr submit? definition-div]
+(defn buttons [raw-text textarea-value submit? definition-div]
   "Handles the 'change/submit text' button."
   [:input#submit-button.button 
    {:type "button" 
@@ -102,22 +102,22 @@
                   (POST "/kar" {:params {:text @raw-text}
                                 :response-format :json
                                 :keywords? true
-                                :handler #(do (reset! curr (style @raw-text (create-map (:karacters %)) definition-div)))})
-                  (reset! curr @raw-text)))
+                                :handler #(do (reset! textarea-value (style @raw-text (create-map (:karacters %)) definition-div)))})
+                  (reset! textarea-value @raw-text)))
     :value (if @submit? "Change text" "Submit")
     :class (if @submit? "is-primary" "is-success")}])
 
 
 (defn text-input [definition-div]
   (let [raw-text (reagent/atom default-text) 
-        curr (reagent/atom [:p "Insert your text here to start..."])
+        textarea-value (reagent/atom [:p "Insert your text here to start..."])
         submit? (atom true)]
     (fn []
       [:div
        [:div.control
-        [textarea raw-text curr submit?]]
+        [textarea raw-text textarea-value submit?]]
        [:div.control
-        [buttons raw-text curr submit? definition-div]]])))
+        [buttons raw-text textarea-value submit? definition-div]]])))
 
 ;; #(reset! value (-> % .-target .-value style))
 
