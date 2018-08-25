@@ -18,7 +18,7 @@
 
 (def gtones ["first" "second" "third" "fourth" "neutral"])
 
-(def default-text "孤山寺北贾亭西水面初平云脚低几处早莺争暖树谁家新燕啄春泥乱花渐欲迷人眼浅草才能没马蹄最爱湖东行不足绿杨阴里白沙堤")
+  (def default-text "米歇尔·阿弗拉克（1910年－1989年）是一位叙利亚哲學家、社会学家和阿拉伯民族主义者。他的理论对复兴社会主义的发展及其政治运动产生了深远影响；他被部分复兴社会主义者视为复兴社会主义学说的首要创始人。他生前出版了一些著作，主要有《为了复兴》、《唯一的归宿之战》和《反对扭曲阿拉伯革命运动的斗争》等。阿弗拉克出生于叙利亚大马士革的一个中產階級家庭。")
 
 (defn construct-definition
   ([]
@@ -34,13 +34,18 @@
   ([character definition current-def]
    (fn [character definition current-def]
      [:div.definition
-      (doall (map-indexed (fn [index definition] 
-                            [:div {:key index :class (if (= @current-def index) "is-visible" "is-hidden")}
-                             [:h1.title.is-1.has-text-centered character]
-                             [:h2.subtitle.is-4.has-text-centered (reduce str (:pinyin definition) (:tone definition))]
-                             [:div.is-size-4 (for [s (clojure.string/split (:definition definition) #"/")] 
-                                               ^{:key s}  [:p (clojure.string/capitalize s)] )]])
-                          definition))
+      (if (string? definition)
+        [:div
+         [:h1.title.is-1.has-text-centered character]
+         [:div.is-size-4 (for [s (clojure.string/split definition #"/")] 
+                           ^{:key s}  [:p (clojure.string/capitalize s)] )]]
+        (doall (map-indexed (fn [index definition] 
+                              [:div {:key index :class (if (= @current-def index) "is-visible" "is-hidden")}
+                               [:h1.title.is-1.has-text-centered character]
+                               [:h2.subtitle.is-4.has-text-centered (reduce str (:pinyin definition) (:tone definition))]
+                               [:div.is-size-4 (for [s (clojure.string/split (:definition definition) #"/")] 
+                                                 ^{:key s}  [:p (clojure.string/capitalize s)] )]])
+                            definition)))
       [:div.def-buttons {:class (if (> (count definition) 1) "is-visible" "is-hidden")}
        [:a.button.is-white {:on-click #(try (swap! current-def dec) (catch js/Object e nil))}
         "<"
@@ -48,6 +53,11 @@
        [:a.button.is-white {:on-click #(try (swap! current-def inc) (catch js/Object e nil))}
         ">"
         [:span.icon [:i.fa.fa-arrow-right]]]]])))
+
+(defn character [text definition]
+  [:span 
+   {:class (nth gtones (dec (int (:tone definition))) "nil")} 
+   text])
 
 (defn kar [text definition definition-div locked?]
   (when (and text definition definition-div)
@@ -66,14 +76,50 @@
                         (reset! this-selected true))
                       (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
                       (reset! definition-div [construct-definition text definition current-def]))}
-         [:span 
-          {:class (nth gtones (dec (int (:tone (first definition)))) "nil")} 
-          text]]))))
+         (character text definition)]))))
+
+(defn special? [char]
+  (println char)
+  (contains? (into #{} ".,;、（）。，《》；") char))
+
+(defn word-div [text definition-div locked?]
+  (when (and text definition-div)
+    (let [current-def (reagent/atom 0)
+          this-selected (reagent/atom false)]
+      ;; (set-validator! current-def #(or (zero? (count definition)) (and (>= % 0) (< % (count definition)))))
+      (fn [text definition-div locked?]
+        (if (special? (:text text))
+          [:div.kar
+           (:text text)]
+          [:div.word
+           {:class (when @this-selected " selected")
+            :on-mouse-over (fn [] 
+                             (when-not @locked?
+                               (reset! definition-div [construct-definition (:text text) (:definition text) current-def])))
+            :on-click (fn [] 
+                        (swap! locked? not)
+                        (when @locked?
+                          (reset! this-selected true))
+                        (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
+                        (reset! definition-div  [construct-definition (:text text) (:definition text) current-def]))
+            }
+           (map-indexed #(character %2 (nth (:characters text) %1)) (:text text))])))))
 
 (defn style [text definitions definition-div]
+  "DEPRECATED creates style for characters.
+  Use `style-words` instead"
   (let [locked? (reagent/atom false)]
     (into [:p] (map-indexed (fn [i text] 
                               [kar text (nth definitions i) definition-div locked?]) text))))
+
+(defn style-words
+  "Creates <p> containing all words in `words`, styled accordingly to the
+  pronunciation found in their definition "
+  [words definition-div]
+  (let [locked? (reagent/atom false)]
+    (into [:p] (map (fn [w]
+                      [word-div w definition-div locked?])
+                    words))))
 
 (defn textarea [raw-text textarea-value content-editable?]
   [:div#textarea.textarea.is-size-3 {:content-editable (not @content-editable?)
@@ -82,7 +128,7 @@
    @textarea-value])
 
 (defn create-map
-  "Glue function. Flattens a list of maps as the JSON returned by the /kar
+  "DEPRECATED. Glue function. Flattens a list of maps as the JSON returned by the /kar
   endpoint so that they are in the form {:definition ... :tone ... :pinyin ...},
   accepted by the `style` function"
   [raw-text]
@@ -91,6 +137,15 @@
       {:definition definition
        :tone tone
        :pinyin pinyin})))
+
+(defn create-word-map
+  [words dict]
+  (map (fn [word]
+         (let [entry (dict word)]
+           {:definition (:definition (first entry))
+            :characters (:pronunciation (first entry))
+            :text word}))
+       words))
 
 (defn buttons [raw-text textarea-value submit? definition-div]
   "Handles the 'change/submit text' button."
@@ -102,7 +157,11 @@
                   (POST "/kar" {:params {:text @raw-text}
                                 :response-format :json
                                 :keywords? true
-                                :handler #(do (reset! textarea-value (style @raw-text (create-map (:karacters %)) definition-div)))})
+                                :handler (fn [response]
+                                           (reset! textarea-value
+                                                      (style-words (create-word-map (:segmented-text response) (reduce-kv #(assoc %1 (name %2) %3) {} (:words response))) definition-div)
+                                                      ;; (style @raw-text (create-map (:karacters %)) definition-div)
+                                                      ))})
                   (reset! textarea-value @raw-text)))
     :value (if @submit? "Change text" "Submit")
     :class (if @submit? "is-primary" "is-success")}])
