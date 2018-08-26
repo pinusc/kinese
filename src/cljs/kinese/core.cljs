@@ -61,25 +61,6 @@
      :key key} 
     text])
 
-(defn kar [text definition definition-div locked?]
-  (when (and text definition definition-div)
-    (let [current-def (reagent/atom 0)
-          this-selected (reagent/atom false)]
-      (set-validator! current-def #(or (zero? (count definition)) (and (>= % 0) (< % (count definition)))))
-      (fn [text definition definition-div locked?]
-        [:div.kar
-         {:class (when @this-selected " selected")
-          :on-mouse-over (fn [] 
-                           (when-not @locked?
-                             (reset! definition-div [construct-definition text definition current-def])))
-          :on-click (fn [] 
-                      (swap! locked? not)
-                      (when @locked?
-                        (reset! this-selected true))
-                      (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
-                      (reset! definition-div [construct-definition text definition current-def]))}
-         (character text definition text)]))))
-
 (defn special? [char]
   ;; (println char)
   (contains? (into #{} ".,;、（）。，《》；") char))
@@ -107,13 +88,6 @@
             }
            (map-indexed #(character %2 (nth (:characters text) %1) %1) (:text text))])))))
 
-(defn style [text definitions definition-div]
-  "DEPRECATED creates style for characters.
-  Use `style-words` instead"
-  (let [locked? (reagent/atom false)]
-    (into [:div] (map-indexed (fn [i text] 
-                              [kar text (nth definitions i) definition-div locked?]) text))))
-
 (defn style-words
   "Creates <p> containing all words in `words`, styled accordingly to the
   pronunciation found in their definition "
@@ -128,17 +102,6 @@
                                      :suppressContentEditableWarning true
                                      :on-input #(reset! raw-text (-> % .-target .-innerHTML))}
    @textarea-value])
-
-(defn create-map
-  "DEPRECATED. Glue function. Flattens a list of maps as the JSON returned by the /kar
-  endpoint so that they are in the form {:definition ... :tone ... :pinyin ...},
-  accepted by the `style` function"
-  [raw-text]
-  (for [line raw-text]
-    (for [{[{tone :tone pinyin :pinyin} & other ] :pronunciation definition :definition} line]
-      {:definition definition
-       :tone tone
-       :pinyin pinyin})))
 
 (defn create-word-map
   [words dict]
@@ -167,7 +130,6 @@
                   (reset! textarea-value @raw-text)))
     :value (if @submit? "Change text" "Submit")
     :class (if @submit? "is-primary" "is-success")}])
-
 
 (defn text-input [definition-div]
   (let [raw-text (reagent/atom default-text) 
