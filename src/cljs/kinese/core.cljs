@@ -187,9 +187,9 @@
        [header]
        [:section.section 
         [:div.columns
-         [:div.column
+         [:div.column.is-half
           @definition-div]
-         [:div.column
+         [:div.column.is-half
           [text-input definition-div]]]]])))
 
 (defn about-page []
