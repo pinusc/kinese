@@ -54,10 +54,12 @@
         ">"
         [:span.icon [:i.fa.fa-arrow-right]]]]])))
 
-(defn character [text definition]
-  [:span 
-   {:class (nth gtones (dec (int (:tone definition))) "nil")} 
-   text])
+(defn character
+  [text definition key]
+   [:span 
+    {:class (nth gtones (dec (int (:tone definition))) "nil")
+     :key key} 
+    text])
 
 (defn kar [text definition definition-div locked?]
   (when (and text definition definition-div)
@@ -76,10 +78,10 @@
                         (reset! this-selected true))
                       (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
                       (reset! definition-div [construct-definition text definition current-def]))}
-         (character text definition)]))))
+         (character text definition text)]))))
 
 (defn special? [char]
-  (println char)
+  ;; (println char)
   (contains? (into #{} ".,;、（）。，《》；") char))
 
 (defn word-div [text definition-div locked?]
@@ -89,9 +91,9 @@
       ;; (set-validator! current-def #(or (zero? (count definition)) (and (>= % 0) (< % (count definition)))))
       (fn [text definition-div locked?]
         (if (special? (:text text))
-          [:div.kar
+          [:span.kar
            (:text text)]
-          [:div.word
+          [:span.word
            {:class (when @this-selected " selected")
             :on-mouse-over (fn [] 
                              (when-not @locked?
@@ -103,13 +105,13 @@
                         (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
                         (reset! definition-div  [construct-definition (:text text) (:definition text) current-def]))
             }
-           (map-indexed #(character %2 (nth (:characters text) %1)) (:text text))])))))
+           (map-indexed #(character %2 (nth (:characters text) %1) %1) (:text text))])))))
 
 (defn style [text definitions definition-div]
   "DEPRECATED creates style for characters.
   Use `style-words` instead"
   (let [locked? (reagent/atom false)]
-    (into [:p] (map-indexed (fn [i text] 
+    (into [:div] (map-indexed (fn [i text] 
                               [kar text (nth definitions i) definition-div locked?]) text))))
 
 (defn style-words
@@ -117,7 +119,7 @@
   pronunciation found in their definition "
   [words definition-div]
   (let [locked? (reagent/atom false)]
-    (into [:p] (map (fn [w]
+    (into [:div] (map (fn [w]
                       [word-div w definition-div locked?])
                     words))))
 
