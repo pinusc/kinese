@@ -25,7 +25,9 @@
                  [net.sf.trove4j/trove4j "3.0.3"]
                  [commons-cli "1.2"]]
 
-  :plugins [[lein-environ "1.0.2"]
+  :plugins [[lein-shell "0.5.0"]
+            [lein-expand-resource-paths "0.0.1"] ; globbing for fnlp
+            [lein-environ "1.0.2"]
             [lein-cljsbuild "1.1.5"]
             [lein-asset-minifier "0.2.7"
              :exclusions [org.clojure/clojure]]]
@@ -45,7 +47,9 @@
    [:cljsbuild :builds :app :compiler :output-to]]
 
   :source-paths ["src/clj" "src/cljc"]
-  :resource-paths ["resources" "target/cljsbuild" "resources/fnlp-core-2.1.jar"]
+  ;; declaring resources/fnlp-core-2.1.jar creates a dir when the file is not found
+  ;; which breaks the build process
+  :resource-paths ["resources" "target/cljsbuild" "resources/*"] 
 
   :minify-assets
   {:assets
@@ -89,21 +93,25 @@
 
 
   :profiles {:dev {:repl-options {:init-ns kinese.repl
-                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+                                  ;; :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
+                                  :nrepl-middleware [cider.piggieback/wrap-cljs-repl]
+                                  }
 
                    :dependencies [[binaryage/devtools "0.9.4"]
                                   [ring/ring-mock "0.3.1"]
                                   [ring/ring-devel "1.6.1"]
                                   [prone "1.1.4"]
-                                  [figwheel-sidecar "0.5.11"]
+                                  [figwheel-sidecar "0.5.16"]
                                   [org.clojure/tools.nrepl "0.2.13"]
                                   [com.cemerick/piggieback "0.2.2"]
                                   [pjstadig/humane-test-output "0.8.2"]
+                                  [cider/piggieback "0.3.8"]
                                   ]
 
                    :source-paths ["env/dev/clj"]
-                   :plugins [[lein-figwheel "0.5.11"]
+                   :plugins [[lein-figwheel "0.5.16"]
                              ]
+                   :prep-tasks [["shell" "./download-fnlp.sh"]]
 
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
@@ -112,7 +120,7 @@
 
              :uberjar {:hooks [minify-assets.plugin/hooks]
                        :source-paths ["env/prod/clj"]
-                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+                       :prep-tasks [["shell" "./download-fnlp.sh"] "compile" ["cljsbuild" "once" "min"]]
                        :env {:production true}
                        :aot :all
                        :omit-source true}})
