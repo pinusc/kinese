@@ -1,6 +1,6 @@
 (ns kinese.textarea
   (:require [reagent.core :as reagent :refer [atom]]
-            [kinese.core]
+            [kinese.definition]
             [kinese.words]))
 
 (def gtones ["first" "second" "third" "fourth" "neutral"])
@@ -30,7 +30,7 @@
             :on-mouse-over (fn [] 
                              (when-not @locked?
                                (reset! definition-div
-                                       [kinese.core/construct-definition
+                                       [kinese.definition/construct-definition
                                         (:text text)
                                         (:definition text) current-def])))
             :on-click (fn [] 
@@ -38,7 +38,7 @@
                         (when @locked?
                           (reset! this-selected true))
                         (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
-                        (reset! definition-div  [kinese.core/construct-definition (:text text) (:definition text) current-def]))
+                        (reset! definition-div  [kinese.definition/construct-definition (:text text) (:definition text) current-def]))
             }
            (map-indexed #(character %2 (nth (:characters text) %1) %1) (:text text))])))))
 
@@ -73,7 +73,7 @@
                 (reset! submit? (not @submit?))
                 (if @submit?
                   (kinese.words/post {:text @raw-text}
-                                     (words-post-handler textarea-value definition-div))
+                                     (words-handler textarea-value definition-div))
                   (reset! textarea-value @raw-text)))
     :value (if @submit? "Change text" "Submit")
     :class (if @submit? "is-primary" "is-success")}])
