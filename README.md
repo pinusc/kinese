@@ -20,14 +20,8 @@ To build, you'll need ``leiningen``.
 
 The project depends on the [FudanNLP](https://github.com/FudanNLP/fnlp) library to segment text. 
 
-At the time of writing, the library can not be retrieved from Maven central repository automatically through `project.clj`. Instead, the jar file has to be downloaded manually from [maven.org](https://repo1.maven.org/maven2/org/fnlp/fnlp-core/2.1/fnlp-core-2.1.jar) and placed in `resources/`. Additionally, all three NLP models (`seg.m`, `dep.m`, `pos.m`)must be downloaded from the project's GitHub releases and placed in a new folder called `models`. 
+At the time of writing, the project's POM on maven central is broken, and it can not be added to leiningen's managed dependencies. Additionally, the three needed model files have to be downloaded from the project's Github repo.
 
-To do this from shell:
+To do all this automatically, simply run
 
-    $ cd resources
-    $ wget "https://repo1.maven.org/maven2/org/fnlp/fnlp-core/2.1/fnlp-core-2.1.jar"
-    $ cd ..
-    $ mkdir models && cd models
-    $ wget "https://github.com/FudanNLP/fnlp/releases/download/v2.1/dep.m"
-    $ wget "https://github.com/FudanNLP/fnlp/releases/download/v2.1/seg.m"
-    $ wget "https://github.com/FudanNLP/fnlp/releases/download/v2.1/pos.m"
+    $ ./download-fnlp.sh
