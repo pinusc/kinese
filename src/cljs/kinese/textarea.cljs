@@ -14,42 +14,46 @@
 
 (defn special? [char]
   ;; (println char)
-  (contains? (into #{} ".,;、（）。，《》；") char))
+  (let [special (into #{} ".,;、（）。，《》；")]
+    (or
+     (contains? special char)
+     (contains? special (first char)))))
 
-(defn word-div [text definition-div locked?]
+(defn word-div [text next-word definition-div locked?]
   (when (and text definition-div)
     (let [current-def (reagent/atom 0)
           this-selected (reagent/atom false)]
       ;; (set-validator! current-def #(or (zero? (count definition)) (and (>= % 0) (< % (count definition)))))
-      (fn [text definition-div locked?]
-        (if (special? (:text text))
-          [:span.kar
-           (:text text)]
-          [:span.word
-           {:class (when @this-selected " selected")
-            :on-mouse-over (fn [] 
-                             (when-not @locked?
-                               (reset! definition-div
-                                       [kinese.definition/construct-definition
-                                        (:text text)
-                                        (:definition text) current-def])))
-            :on-click (fn [] 
-                        (swap! locked? not)
-                        (when @locked?
-                          (reset! this-selected true))
-                        (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
-                        (reset! definition-div  [kinese.definition/construct-definition (:text text) (:definition text) current-def]))
-            }
-           (map-indexed #(character %2 (nth (:characters text) %1) %1) (:text text))])))))
+      (fn [text next-word definition-div locked?]
+        [:span.word
+         {:class (str
+                  (when @this-selected " selected")
+                  (when (or (special? (:text text))
+                            (special? (:text next-word))) " nospace"))
+          :on-mouse-over (fn [] 
+                           (when-not @locked?
+                             (reset! definition-div
+                                     [kinese.definition/construct-definition
+                                      (:text text)
+                                      (:definition text) current-def])))
+          :on-click (fn [] 
+                      (swap! locked? not)
+                      (when @locked?
+                        (reset! this-selected true))
+                      (add-watch locked? :key #(do (remove-watch locked? %1) (when-not %4 (reset! this-selected false))))
+                      (reset! definition-div  [kinese.definition/construct-definition (:text text) (:definition text) current-def]))
+          }
+         (map-indexed #(character %2 (nth (:characters text) %1) %1) (:text text))]))))
 
 (defn style-words
   "Creates <p> containing all words in `words`, styled accordingly to the
   pronunciation found in their definition "
   [words definition-div]
   (let [locked? (reagent/atom false)]
-    (into [:div] (map (fn [w]
-                        [word-div w definition-div locked?])
-                      words))))
+    (into [:div] (map (fn [word next-word]
+                        [word-div word next-word definition-div locked?])
+                      words
+                      (rest words)))))
 
 (defn textarea [raw-text textarea-value content-editable?]
   [:div#textarea.textarea.is-size-3 {:content-editable (not @content-editable?)

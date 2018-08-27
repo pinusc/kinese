@@ -73,8 +73,12 @@
     border-radius: 25%;
 }
 
-.word:not(first-child) {
-    margin-left: 1em;
+.word:not(last-child) {
+    margin-right: 1em;
+}
+
+.word.nospace {
+    margin-right: 0;
 }
 
 .kar.endofword {
