@@ -1,10 +1,12 @@
+(def figwheel-version "0.5.15")
+(def environ-version "1.1.0")
 (defproject kinese "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [ring-server "0.4.0"]
                  [reagent "0.7.0"]
                  [reagent-utils "0.2.1"]
@@ -25,8 +27,8 @@
 
   :plugins [[lein-shell "0.5.0"]
             [lein-expand-resource-paths "0.0.1"] ; globbing for fnlp
-            [lein-environ "1.0.2"]
-            [lein-cljsbuild "1.1.5"]
+            [lein-environ ~environ-version]
+            [lein-cljsbuild "1.1.6"]
             [lein-asset-minifier "0.2.7"
              :exclusions [org.clojure/clojure]]]
 
@@ -67,31 +69,35 @@
                              :output-dir "target/cljsbuild/public/js/out"
                              :source-map true
                              :optimizations :none
-                             :pretty-print  true}}}}
+                             :preloads [devtools.preload]}}}}
 
   :figwheel
   {:http-server-root "public"
    :server-port 3449
    :nrepl-port 7002
-   :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"]
+   ;; :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"]
    :css-dirs ["resources/public/css"]
    :ring-handler kinese.handler/app}
 
   :profiles {:dev {:repl-options {:init-ns kinese.repl
                                   :nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
 
-                   :dependencies [[binaryage/devtools "0.9.4"]
+                   :dependencies [
+                                  [binaryage/devtools "0.9.10"]
+                                  [binaryage/dirac "RELEASE"]
                                   [ring/ring-mock "0.3.1"]
                                   [ring/ring-devel "1.6.1"]
                                   [prone "1.1.4"]
-                                  [figwheel-sidecar "0.5.16"]
+                                  [figwheel-sidecar ~figwheel-version]
+                                  [figwheel ~figwheel-version]
+                                  [environ ~environ-version]
                                   [org.clojure/tools.nrepl "0.2.13"]
                                   [com.cemerick/piggieback "0.2.2"]
                                   [pjstadig/humane-test-output "0.8.2"]
                                   [cider/piggieback "0.3.8"]]
 
                    :source-paths ["env/dev/clj"]
-                   :plugins [[lein-figwheel "0.5.16"]]
+                   :plugins [[lein-figwheel ~figwheel-version]]
                    :prep-tasks [["shell" "./download-fnlp.sh"]]
 
                    :injections [(require 'pjstadig.humane-test-output)

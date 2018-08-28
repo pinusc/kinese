@@ -1,9 +1,10 @@
 (ns ^:figwheel-no-load kinese.dev
   (:require
     [kinese.core :as core]
-    [devtools.core :as devtools]))
+    ;[devtools.core :as devtools]
+    ))
 
-(devtools/install!)
+;; (devtools/install!)
 
 (enable-console-print!)
 
