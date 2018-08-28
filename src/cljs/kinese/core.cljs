@@ -1,11 +1,26 @@
 (ns kinese.core
     (:require [reagent.core :as reagent :refer [atom]]
               [kinese.textarea]
+              [kinese.contextual-definitions :refer [contextual-definitions]]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
+              [ajax.core :refer [GET]]
               [clojure.string :as string]))
-
 (def default-text "米歇尔·阿弗拉克（1910年－1989年）是一位叙利亚哲學家、社会学家和阿拉伯民族主义者。他的理论对复兴社会主义的发展及其政治运动产生了深远影响；他被部分复兴社会主义者视为复兴社会主义学说的首要创始人。他生前出版了一些著作，主要有《为了复兴》、《唯一的归宿之战》和《反对扭曲阿拉伯革命运动的斗争》等。阿弗拉克出生于叙利亚大马士革的一个中產階級家庭。")
+
+(defn get-random-text
+  []
+  (println "foo")
+  (get (GET "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
+        "query"))
+
+(def default-tokens
+  '(["foo" "lorem ipsum dolor sit amet"]
+    ["bar" ["sed consecutura ali" "foobar lol"]]
+    ["baz" "merol muspi rolod tis tema"]
+    ["bat" ["sed consecutura ali" "foobar lol"]]
+    ["bak" ["sed consecutura ali" "foobar lol"]]
+    ))
 
 (defn header []
   [:section.hero.is-primary 
@@ -20,11 +35,7 @@
       [:div
        [header]
        [:section.section 
-        [:div.columns
-         [:div.column.is-half
-          @definition-div]
-         [:div.column.is-half
-          [kinese.textarea/text-input definition-div]]]]])))
+        [contextual-definitions default-tokens]]])))
 
 (defn about-page []
   [:div [:h2 "About kinese"]
