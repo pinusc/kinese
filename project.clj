@@ -13,11 +13,9 @@
                  [compojure "1.6.0"]
                  [hiccup "1.0.5"]
                  [yogthos/config "0.8"]
-                 [org.clojure/clojurescript "1.10.339"
-                  :scope "provided"]
+                 [org.clojure/clojurescript "1.10.339" :scope "provided"]
                  [secretary "1.2.3"]
-                 [venantius/accountant "0.2.0"
-                  :exclusions [org.clojure/tools.reader]]
+                 [venantius/accountant "0.2.0" :exclusions [org.clojure/tools.reader]]
                  [org.clojure/tools.trace "0.7.9"]
                  [cljs-ajax "0.6.0"]
                  [ring-transit "0.1.6"]
@@ -56,46 +54,31 @@
    {"resources/public/css/site.min.css" "resources/public/css/site.css"}}
 
   :cljsbuild
-  {:builds {:min
-            {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
-             :compiler
-             {:output-to "target/cljsbuild/public/js/app.js"
-              :output-dir "target/uberjar"
-              :optimizations :advanced
-              :pretty-print  false}}
-            :app
-            {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-             :figwheel {:on-jsload "kinese.core/mount-root"}
-             :compiler
-             {:main "kinese.dev"
-              :asset-path "/js/out"
-              :output-to "target/cljsbuild/public/js/app.js"
-              :output-dir "target/cljsbuild/public/js/out"
-              :source-map true
-              :optimizations :none
-              :pretty-print  true}}
-
-
-
-            }
-   }
-
+  {:builds {:min {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
+                  :compiler {:output-to "target/cljsbuild/public/js/app.js"
+                             :output-dir "target/uberjar"
+                             :optimizations :advanced
+                             :pretty-print  false}}
+            :app {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+                  :figwheel {:on-jsload "kinese.core/mount-root"}
+                  :compiler {:main "kinese.dev"
+                             :asset-path "/js/out"
+                             :output-to "target/cljsbuild/public/js/app.js"
+                             :output-dir "target/cljsbuild/public/js/out"
+                             :source-map true
+                             :optimizations :none
+                             :pretty-print  true}}}}
 
   :figwheel
   {:http-server-root "public"
    :server-port 3449
    :nrepl-port 7002
-   :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"
-                      ]
+   :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"]
    :css-dirs ["resources/public/css"]
    :ring-handler kinese.handler/app}
 
-
-
   :profiles {:dev {:repl-options {:init-ns kinese.repl
-                                  ;; :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
-                                  :nrepl-middleware [cider.piggieback/wrap-cljs-repl]
-                                  }
+                                  :nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
 
                    :dependencies [[binaryage/devtools "0.9.4"]
                                   [ring/ring-mock "0.3.1"]
@@ -105,12 +88,10 @@
                                   [org.clojure/tools.nrepl "0.2.13"]
                                   [com.cemerick/piggieback "0.2.2"]
                                   [pjstadig/humane-test-output "0.8.2"]
-                                  [cider/piggieback "0.3.8"]
-                                  ]
+                                  [cider/piggieback "0.3.8"]]
 
                    :source-paths ["env/dev/clj"]
-                   :plugins [[lein-figwheel "0.5.16"]
-                             ]
+                   :plugins [[lein-figwheel "0.5.16"]]
                    :prep-tasks [["shell" "./download-fnlp.sh"]]
 
                    :injections [(require 'pjstadig.humane-test-output)
