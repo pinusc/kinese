@@ -12,14 +12,6 @@
   (get (GET "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
         "query"))
 
-(def default-tokens
-  '(["foo" ["lorem ipsum dolor sit amet"]]
-    ["bar" ["sed consecutura ali" "foobar lol"]]
-    ["baz" ["merol muspi rolod tis tema"]]
-    ["bat" ["sed consecutura ali" "foobar lol"]]
-    ["bak" ["sed consecutura ali" "foobar lol"]]
-    ))
-
 (defn header []
   [:section.hero.is-primary 
    [:div.hero-body
@@ -31,7 +23,7 @@
   [:div
    [header]
    [:section.section 
-    [contextual-definitions default-tokens]]])
+    [contextual-definitions]]])
 
 (defn about-page []
   [:div [:h2 "About kinese"]

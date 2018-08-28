@@ -78,6 +78,10 @@
     text-decoration: underline;
     color: green;
 }
+.token .word a.no-def {
+    text-decoration: none;
+    color: gray;
+}
 
 .token .word h1 {
     margin-right: 1rem;
@@ -85,4 +89,5 @@
 
 .definition {
     position: absolute;
+    white-space: nowrap;
 }

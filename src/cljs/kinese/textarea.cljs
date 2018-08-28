@@ -83,7 +83,7 @@
     :class (if @submit? "is-primary" "is-success")}])
 
 (defn text-input [definition-div]
-  (let [raw-text (reagent/atom kinese.core/default-text) 
+  (let [raw-text (reagent/atom "") 
         textarea-value (reagent/atom [:p "Insert your text here to start..."])
         submit? (atom true)]
     (fn []
