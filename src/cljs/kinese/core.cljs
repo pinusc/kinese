@@ -15,9 +15,9 @@
         "query"))
 
 (def default-tokens
-  '(["foo" "lorem ipsum dolor sit amet"]
+  '(["foo" ["lorem ipsum dolor sit amet"]]
     ["bar" ["sed consecutura ali" "foobar lol"]]
-    ["baz" "merol muspi rolod tis tema"]
+    ["baz" ["merol muspi rolod tis tema"]]
     ["bat" ["sed consecutura ali" "foobar lol"]]
     ["bak" ["sed consecutura ali" "foobar lol"]]
     ))
