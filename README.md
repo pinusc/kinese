@@ -1,13 +1,16 @@
 # kinese
 *kinese* is a webapp to help mandarin learners to read chinese. The backend is written in clojure+ring, the frontend in clojurescript+reagent.
 
-**Features:**
-- Character dictionary lookup
+## Features
 - Character tone coloring
-
-**Coming soon:**
 - Word segmentation
 - Word dictionary lookup
+
+## Todo
+- Character dictionary lookup
+- Manual segmentation
+- More languages
+- Word difficulty filters
 
 ## Build
 To build, you'll need ``leiningen``.
@@ -22,6 +25,4 @@ The project depends on the [FudanNLP](https://github.com/FudanNLP/fnlp) library 
 
 At the time of writing, the project's POM on maven central is broken, and it can not be added to leiningen's managed dependencies. Additionally, the three needed model files have to be downloaded from the project's Github repo.
 
-To do all this automatically, simply run
-
-    $ ./download-fnlp.sh
+The download of the dependency is implemented in `download-fnlp.sh`, which is automatically called by leiningen on the first build.

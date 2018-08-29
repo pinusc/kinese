@@ -1,9 +1,9 @@
 (def figwheel-version "0.5.15")
 (def environ-version "1.1.0")
 (defproject kinese "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "A reading helper with interactive interlinear dictionary for different languages"
   :url "http://example.com/FIXME"
-  :license {:name "Eclipse Public License"
+  :license {:name "GNU General Public License Version 3"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.9.0"]
