@@ -3,6 +3,7 @@
     position: absolute;
     top: 0;
 }
+
 .def-buttons > .button:first-child {
     float: left;
 }
@@ -67,6 +68,7 @@
 }
 
 .textcontainer {
+    margin-top: 3em;
 }
 
 .token .word {
@@ -75,16 +77,38 @@
 }
 
 .token .word a {
-    text-decoration: underline;
+    /* text-decoration: underline; */
     color: green;
 }
+
 .token .word a.no-def {
     text-decoration: none;
     color: gray;
 }
 
-.token .word h1 {
+.token .word {
     margin-right: 1rem;
+}
+
+.token .word div > div > span.metadata {
+    position: absolute;
+    top: -1em;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.charcontainer {
+    margin-top: 1em;
+}
+
+.charcontainer .char {
+    display: inline-block;
+    position: relative;
+    /* padding-right: 0.05em; */
+}
+
+.char span.metadata {
+    font-size: x-small;
 }
 
 .definition {

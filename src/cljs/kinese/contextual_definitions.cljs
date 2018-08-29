@@ -5,7 +5,20 @@
 
 (def default-text "是一位叙利亚哲學家、社会学家和阿拉伯民族主义者。他的理论对复兴社会主义的发展及其政治运动产生了深远影响；他被部分复兴社会主义者视为复兴社会主义学说的首要创始人。他生前出版了一些著作，主要有《为了复兴》、《唯一的归宿之战》和《反对扭曲阿拉伯革命运动的斗争》等。阿弗拉克出生于叙利亚大马士革的一个中產階級家庭。")
 
-(defn token-div [i {word :text definition :definition} show-level]
+(def mtones {"1" "first" "2" "second" "3" "third" "4" "fourth" "5" "neutral" nil ""})
+
+(defn word-display
+  [word characters]
+  [:div.charcontainer
+   (map (fn [char pron]
+          [:div.char {:key char
+                      :class (mtones (:tone pron))}
+           [:span.metadata (:pinyin pron)]
+           [:span.character.is-size-3 char]])
+        word
+        (or characters (repeat nil)))])
+
+(defn token-div [i {word :text definition :definition :as token} show-level]
   "Creates a context-aware word-definition(s) div.
    `i` is a function (containing some `reagent/atom`s) that returns
    the number of definition-lines printed *before* the token, i.e.
@@ -24,7 +37,7 @@
                                               :none :first
                                               :first :all
                                               :all :none))))}
-     [:h1.is-size-3 word]]]
+     [word-display word (:characters token)]]]
    [:div.definition
     {:style {:margin-top (str (* (i) 1.5) "em")}}
     [:em 
