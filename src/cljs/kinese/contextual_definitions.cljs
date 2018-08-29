@@ -7,6 +7,10 @@
 
 (def mtones {"1" "first" "2" "second" "3" "third" "4" "fourth" "5" "neutral" nil ""})
 
+(defonce state (reagent/atom {:text-controls {:textarea? false
+                                              :loading? false}
+                              :dictionary '()}))
+
 (defn word-display
   [word characters]
   [:div.charcontainer
@@ -46,11 +50,11 @@
          (into [:ul] (map (fn [i] [:li i]) definition))
          (first definition)))]]])
 
-(defn submit-text [dictionary]
+(defn submit-text [dictionary callback]
   (words/post {:text default-text}
               (fn [word-map]
-                ;; (info word-map)
-                (reset! dictionary word-map))))
+                (reset! dictionary word-map)
+                (when callback (callback)))))
 
 (defn partition-definition 
   "Split a long definition string in shorter (< 70 letters) strings
@@ -77,8 +81,6 @@
      (or
       (contains? curr char)
       (contains? curr (first char))))))
-
-(info (special? "."))
 
 (defn partition-dictionary
   [n dict]
@@ -127,12 +129,28 @@
         (map definition-row (partition-dictionary 10 @dictionary))))
 
 (defn contextual-definitions []
-  (let [dictionary (reagent/atom '())]
-    (submit-text dictionary)
+  (let [dictionary (reagent/cursor state [:dictionary])
+        textarea? (reagent/cursor state [:text-controls :textarea?])
+        loading? (reagent/cursor state [:text-controls :loading?])]
     (fn []
-      [:div.container 
-       [:input.button
-        {:type "button"
-         :value "Submit random text!"
-         :on-click #(submit-text dictionary)}]
-       [definition-rows-container dictionary]])))
+      [:div.container
+       (if @textarea?
+         [:div
+          [:div.control>input#change-text.button.is-link
+           {:type "button"
+            :value "Change text"
+            :on-click #(do (swap! loading? not)
+                           (swap! textarea? not))}]
+          [definition-rows-container dictionary]]
+         [:div 
+          [:div.field
+           [:label.label "Insert text here"]
+           [:div.control>textarea.textarea
+            {:default-value default-text}]]
+          [:div.control>a#submit-text.button.is-info.is-pulled-right
+           {:type "button"
+            :class (when @loading? "is-loading is-success")
+            :on-click (fn []
+                        (swap! loading? not)
+                        (submit-text dictionary #(swap! textarea? not)))}
+           "Submit text!"]])])))
