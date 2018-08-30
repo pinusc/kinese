@@ -120,6 +120,17 @@ input#change-text {
     width: 100%;
 }
 
+.definition.content > div {
+    position: relative;
+}
+
+.definition.content > div > a {
+    position: absolute;
+    left: 100%;
+    padding-left: 0.5em;
+    color: green;
+}
+
 .definition.content ol {
     margin-top: 0;
     margin-left: 0.5em;
@@ -127,16 +138,6 @@ input#change-text {
 
 .definition.content ol > li {
     margin-top: 0;
-    font-weight: bold;
-}
-
-.definition.content ol ul {
-    font-weight: normal;
-    font-style: italic;
-}
-
-.definition.content > p {
-    font-style: italic;
 }
 
 .definition.content ul {

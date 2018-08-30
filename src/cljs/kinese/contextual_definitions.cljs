@@ -51,13 +51,18 @@
         (do 
             (into [:ol]
                   (map (fn [main-def]
-                         [:li
+                         [:li.has-text-weight-semibold
                           (into [:ul]
                                 (map (fn [li]
-                                       [:li (clojure.string/replace li #"/" " / ")])
+                                       [:li.is-italic.has-text-weight-normal (clojure.string/replace li #"/" " / ")])
                                      main-def))])
                        definition)))
-        [:p (clojure.string/replace (str (ffirst definition)) #"/" " / ") ]))]])
+        [:div
+         (when (> (count definition) 1)
+           [:a
+            {:on-click #(reset! show-level :all)}
+            "(...)"])
+         [:p.is-italic (clojure.string/replace (str (ffirst definition)) #"/" " / ") ]]))]])
 
 (defn submit-text [dictionary callback]
   (words/post {:text default-text}
