@@ -42,13 +42,20 @@
                                               :first :all
                                               :all :none))))}
      [word-display word (:characters token)]]]
-   [:div.definition
+   [:div.definition.content
     {:style {:margin-top (str (* (i) 1.5) "em")}}
-    [:em 
-     (when (not= @show-level :none)
-       (if (= @show-level :all)
-         (into [:ul] (map (fn [i] [:li i]) definition))
-         (first definition)))]]])
+    (when (not= @show-level :none)
+      (if (= @show-level :all)
+        (do (info definition)
+            (into [:ol]
+                  (map (fn [main-def]
+                         [:li
+                          (into [:ul]
+                                (map (fn [li]
+                                       [:li (clojure.string/replace li #"/" " / ")])
+                                     main-def))])
+                       definition)))
+        [:p (clojure.string/replace (str (ffirst definition)) #"/" " / ") ]))]])
 
 (defn submit-text [dictionary callback]
   (words/post {:text default-text}
@@ -102,13 +109,12 @@
                atoms []
                dict-list dictionary]
           (let [current-atom (reagent/atom :first)]
-            (info )
             (if (empty? dict-list)
               tokens
               (recur (inc i)
                      (conj tokens [token-div
                                    #(apply + (map (fn [tok ato]
-                                                    (let [n-defs (->> (nth tok 2) :definition count)]
+                                                    (let [n-defs (->> (nth tok 2) :definition flatten count)]
                                                       (if (nil? n-defs)
                                                         0
                                                         (case @ato
@@ -117,14 +123,15 @@
                                                           :all n-defs))))
                                                   tokens
                                                   atoms)) ;; function to count used defininition lines
-                                   (update-in (first dict-list) [:definition] #(flatten (map partition-definition %))) ;; split long definitions
+                                   (update-in (first dict-list)
+                                              [:definition]
+                                              #(map partition-definition %)) ;; split long definitions
                                    current-atom])
                      (conj atoms current-atom)
                      (rest dict-list)))))))
 
 (defn definition-rows-container
   [dictionary]
-  (info @dictionary)
   (into [:div]
         (map definition-row (partition-dictionary 10 @dictionary))))
 

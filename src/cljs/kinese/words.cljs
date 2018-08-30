@@ -1,18 +1,14 @@
 (ns kinese.words
   (:require [ajax.core :refer [POST]]))
 
-
-
 (defn create-word-map
   "Transforms the POST response in the more useful format used internally"
   [words dict]
   (map (fn [word]
          (let [entry (dict word)
-               definition (:definition (first entry))
+               definition (map :definition entry)
                characters (:pronunciation (first entry))]
-           {:definition (if (or (nil? definition) (coll? definition))
-                          definition ;; TODO partition this one too
-                          (list definition))
+           {:definition definition
             :characters characters
             :text word}))
        words))

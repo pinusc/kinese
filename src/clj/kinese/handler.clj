@@ -9,22 +9,18 @@
 
 (defn read-dict [path]
   (let [txt (slurp path)]
-    (into {}
-          (reduce (fn [li n] 
-                    (do 
-                        (let [term (first n)
-                              tone (map #(hash-map :pinyin (apply str (drop-last %)) :tone (last %)) (string/split (first (fnext n)) #" "))
-                              definition (fnext (fnext n))]
-                          (if (= term (ffirst li))
-                            (conj (next li) [term (conj (fnext (first li)) {:pronunciation tone :definition definition})])
-                            ;(conj (next li) [(first n) (next (first li))])
-                            (conj li [term [{:pronunciation tone :definition definition}]])))))
-                  '()
-                  (map
-                    #(let [t (next %)]
-                       [(first t) (next t)]) ;( vector (ffirst %2) (nnext %2))) 
-                    (re-seq #"(?m)^.* (.*) \[((?:\w+\d\s?)+)\] \/(.*)\/$" txt))))))
-;(re-seq #".* (.*) \[(\w+)(\d)\] \/(.*)\/\n" txt)))
+    (reduce (fn [dict [word entry]]
+              (let [[raw-pronunciation definition] entry
+                    pronunciation (map #(hash-map :pinyin (apply str (drop-last %))
+                                                  :tone (last %))
+                                       (string/split raw-pronunciation #" "))]
+                (merge-with into dict {word [{:definition definition
+                                              :pronunciation pronunciation}]})))
+            {}
+            (map
+             #(let [t (next %)]
+                [(first t) (next t)]) ;( vector (ffirst %2) (nnext %2))) 
+             (re-seq #"(?m)^.* (.*) \[((?:\w+\d\s?)+)\] \/(.*)\/$" txt)))))
 
 (def dict (read-dict "cedict_ts.u8"))
 (def fnlp (org.fnlp.nlp.cn.CNFactory/getInstance "models"))
@@ -59,7 +55,7 @@
   ;; (println "kn" (count (map #(nth (first (get dict (str %))) 1) (:text arg))))
   (let [text (:text arg)
         segmented-text (segment text)]
-    (json-response {:karacters (into [] (map #(get dict (str %)) text)) 
+    (json-response {:karacters (mapv #(get dict (str %)) text) 
                     :segmented-text segmented-text
                     :words (reduce #(assoc %1 %2 (get dict %2)) {} segmented-text)})))
 

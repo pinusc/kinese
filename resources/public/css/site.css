@@ -119,3 +119,36 @@
 input#change-text {
     width: 100%;
 }
+
+.definition.content ol {
+    margin-top: 0;
+    margin-left: 0.5em;
+}
+
+.definition.content ol > li {
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.definition.content ol ul {
+    font-weight: normal;
+    font-style: italic;
+}
+
+.definition.content > p {
+    font-style: italic;
+}
+
+.definition.content ul {
+    margin-top: 0;
+    margin-left: 0;
+    list-style: none;
+}
+
+.definition.content ul li {
+    margin-top: 0;
+}
+
+.definition.content ul li:not(:first-child) {
+    margin-left: 1em;
+}
