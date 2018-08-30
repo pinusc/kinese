@@ -97,6 +97,18 @@
     transform: translate(-50%, 0);
 }
 
+.token:hover .definition p, .token:hover .definition ul li {
+    /* font-weight: 600 !important; */
+    /* font-style: italic !important; */
+    background-color: #eee;
+    border-radius: 3px;
+}
+
+.token .definition p, .token .definition ul li {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
 .charcontainer {
     margin-top: 1em;
 }
