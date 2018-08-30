@@ -10,7 +10,7 @@
 (defonce state (reagent/atom {:text-controls {:textarea? false
                                               :loading? false}
                               :floating-menu {:open? false}
-                              :shown-level 3
+                              :shown-level 2
                               :dictionary '()}))
 
 (defn word-display
@@ -183,17 +183,21 @@
        (when @open?
          [:div.content
           [:h3.is-title.is-5 "Menu"]
-          [:div.control>input#change-text.button.is-link
+          [:div.field>input#change-text.button.is-link
            {:type "button"
             :value (str "Change text")
             :on-click #(swap! textarea? not)}]
           [:div.field
-           [:label.label "Difficulty slider"]
+           [:label.label "Difficulty of words to show: "]
            [:input.slider.is-fullwidth
             {:step 1
              :min 0
              :max 6
-             :default-value 3
+             :default-value @shown-level
              :type "range"
-             :on-change #(->> % .-target .-value int (reset! shown-level))}
-            ]]])])))
+             :on-change #(->> % .-target .-value int (reset! shown-level))}]
+           [:p.has-text-centered.has-text-weight-semibold.has-text-info
+            (cond
+              (= 0 @shown-level) "All"
+              (< 0 @shown-level 6) (str "HSK " (inc @shown-level) " or higher")
+              (= @shown-level 6) "Not in HSK")]]])])))
