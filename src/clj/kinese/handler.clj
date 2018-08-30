@@ -56,8 +56,17 @@
   (let [text (:text arg)
         segmented-text (segment text)]
     (json-response {:karacters (mapv #(get dict (str %)) text) 
-                    :segmented-text segmented-text
-                    :words (reduce #(assoc %1 %2 (get dict %2)) {} segmented-text)})))
+                    :segmented-text (reduce (fn [li word]
+                                              (if (dict word)
+                                                (conj li word)
+                                                (into li word)))
+                                            [] segmented-text)
+                    :words (reduce (fn [acc-dict word]
+                                     (if-let [entry (dict word)]
+                                       (assoc acc-dict word entry)
+                                       (reduce #(assoc %1 %2 (get dict (str %2)))
+                                               acc-dict word)))
+                                   {} segmented-text)})))
 
 (defroutes routes
   (GET "/" [] (loading-page))
