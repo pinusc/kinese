@@ -3,24 +3,10 @@
             [compojure.route :refer [not-found resources]]
             [hiccup.page :refer [include-js include-css html5]]
             [kinese.middleware :refer [wrap-middleware]]
+            [kinese.lang.chinese.dictionary :refer [read-dict]]
             [config.core :refer [env]]
             [clojure.string :as string]
             [ring.util.json-response :refer [json-response]]))
-
-(defn read-dict [path]
-  (let [txt (slurp path)]
-    (reduce (fn [dict [word entry]]
-              (let [[raw-pronunciation definition] entry
-                    pronunciation (map #(hash-map :pinyin (apply str (drop-last %))
-                                                  :tone (last %))
-                                       (string/split raw-pronunciation #" "))]
-                (merge-with into dict {word [{:definition definition
-                                              :pronunciation pronunciation}]})))
-            {}
-            (map
-             #(let [t (next %)]
-                [(first t) (next t)]) ;( vector (ffirst %2) (nnext %2))) 
-             (re-seq #"(?m)^.* (.*) \[((?:\w+\d\s?)+)\] \/(.*)\/$" txt)))))
 
 (def dict (read-dict "cedict_ts.u8"))
 (def fnlp (org.fnlp.nlp.cn.CNFactory/getInstance "models"))
@@ -39,7 +25,8 @@
            :content "width=device-width, initial-scale=1"}]
    (include-css (if (env :dev) "/css/site.css" "/css/site.min.css")
                 "/css/bulma.css"
-                #_("https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css"))])
+                "/css/bulma-slider.min.css"
+                "https://use.fontawesome.com/releases/v5.3.1/css/all.css")])
 
 (defn loading-page []
   (html5

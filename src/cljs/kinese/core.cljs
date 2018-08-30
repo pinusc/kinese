@@ -1,6 +1,6 @@
 (ns kinese.core
     (:require [reagent.core :as reagent :refer [atom]]
-              [kinese.contextual-definitions :refer [contextual-definitions]]
+              [kinese.contextual-definitions :refer [contextual-definitions floating-menu]]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [ajax.core :refer [GET]]
@@ -22,6 +22,7 @@
 (defn home-page []
   [:div
    [header]
+   [floating-menu]
    [:section.section 
     [contextual-definitions]]])
 

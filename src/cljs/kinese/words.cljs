@@ -9,6 +9,7 @@
                definition (map :definition entry)
                characters (:pronunciation (first entry))]
            {:definition definition
+            :level (:level (first entry))
             :characters characters
             :text word}))
        words))

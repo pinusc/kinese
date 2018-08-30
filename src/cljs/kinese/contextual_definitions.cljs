@@ -3,12 +3,14 @@
   (:require [reagent.core :as reagent]
             [kinese.words :as words]))
 
-(def default-text "是一位叙利亚哲學家、社会学家和阿拉伯民族主义者。他的理论对复兴社会主义的发展及其政治运动产生了深远影响；他被部分复兴社会主义者视为复兴社会主义学说的首要创始人。他生前出版了一些著作，主要有《为了复兴》、《唯一的归宿之战》和《反对扭曲阿拉伯革命运动的斗争》等。阿弗拉克出生于叙利亚大马士革的一个中產階級家庭。")
+  (def default-text "说到古代的巾帼英雄，大家可能首先想到的是穆桂英、花木兰之类的，但这些多数都是演义小说塑造出了的。当然，真实的历史上的巾帼英雄也不是没有，比如冼夫人，她可是周总理亲评的巾帼英雄第一人哦！")
 
 (def mtones {"1" "first" "2" "second" "3" "third" "4" "fourth" "5" "neutral" nil ""})
 
 (defonce state (reagent/atom {:text-controls {:textarea? false
                                               :loading? false}
+                              :floating-menu {:open? false}
+                              :shown-level 3
                               :dictionary '()}))
 
 (defn word-display
@@ -46,7 +48,7 @@
     {:style {:margin-top (str (* (i) 1.5) "em")}}
     (when (not= @show-level :none)
       (if (= @show-level :all)
-        (do (info definition)
+        (do 
             (into [:ol]
                   (map (fn [main-def]
                          [:li
@@ -108,7 +110,10 @@
                tokens []
                atoms []
                dict-list dictionary]
-          (let [current-atom (reagent/atom :first)]
+          (let [current-atom (reagent/atom (if (< (:shown-level @state)
+                                                  (or (:level (first dict-list)) 7))
+                                             :first
+                                             :none))]
             (if (empty? dict-list)
               tokens
               (recur (inc i)
@@ -143,11 +148,6 @@
       [:div.container
        (if @textarea?
          [:div
-          [:div.control>input#change-text.button.is-link
-           {:type "button"
-            :value "Change text"
-            :on-click #(do (swap! loading? not)
-                           (swap! textarea? not))}]
           [definition-rows-container dictionary]]
          [:div 
           [:div.field
@@ -159,5 +159,36 @@
             :class (when @loading? "is-loading is-success")
             :on-click (fn []
                         (swap! loading? not)
-                        (submit-text dictionary #(swap! textarea? not)))}
+                        (submit-text dictionary #(do (swap! loading? not)
+                                                     (swap! textarea? not))))}
            "Submit text!"]])])))
+
+(defn floating-menu
+  []
+  (let [fmenu (reagent/cursor state [:floating-menu])
+        textarea? (reagent/cursor state [:text-controls :textarea?])
+        shown-level (reagent/cursor state [:shown-level])
+        open? (reagent/cursor fmenu [:open?])]
+    (when (:textarea? (:text-controls @state))
+      [:div#floating-menu.box
+       [:a.is-pulled-right
+        {:on-click #(swap! open? not)}
+        [:span.icon.is-medium>i.fas.fa-2x
+         {:class (if-not @open? " fa-bars has-text-info" " fa-times has-text-danger")}]]
+       (when @open?
+         [:div.content
+          [:h3.is-title.is-5 "Menu"]
+          [:div.control>input#change-text.button.is-link
+           {:type "button"
+            :value (str "Change text")
+            :on-click #(swap! textarea? not)}]
+          [:div.field
+           [:label.label "Difficulty slider"]
+           [:input.slider.is-fullwidth
+            {:step 1
+             :min 0
+             :max 6
+             :default-value 3
+             :type "range"
+             :on-change #(->> % .-target .-value int (reset! shown-level))}
+            ]]])])))

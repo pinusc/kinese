@@ -152,3 +152,10 @@ input#change-text {
 .definition.content ul li:not(:first-child) {
     margin-left: 1em;
 }
+
+#floating-menu {
+    position: fixed;
+    right: 3em;
+    top: 3em;
+    z-index: 100;
+}
