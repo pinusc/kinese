@@ -18,7 +18,8 @@
      [:div.columns
       [:div#title-column.column.is-half
        [:h1.title.is-2.is-inline "Kinese, "]
-       [:h2.subtitle.is-3.is-inline "a better approach to language learning"]]
+       [:h2.subtitle.is-3.is-inline "a better approach to language learning"]
+       [:h4.subtitle.is-5 "Kinese provides an interactive interlinear dictionary for any text you insert. It gets out of your way and lets you read faster and with less effort!"]]
       [:div.column.is-half
        [textarea]]]]]])
 
@@ -28,8 +29,31 @@
     [kinese.components/navbar]
     [:div.hero-body
      [:h1.title.is-1 "About kinese"]]]
-   [:section.section
-    [:h1.title.is-1 "About kinese"]]])
+   [:section.section>div.container
+    [:h3.title.is-3 "Free, open source"]
+    [:p
+     "The project is released under the "
+     [:a {:href "https://www.gnu.org/licenses/#GPL"} "Gnu General License (v3)."]]
+
+    [:p
+     "Kinese was written in Clojure + Ring on the backend, and ClojureScript + Reagent on the frontend. The code "
+     [:a {:href "https://github.com/pinusc/kinese"} "is available on Github"]]
+    
+    ]
+   [:section.section>div.container
+    [:h3.title.is-3 "Data sources"]
+    [:p "All the dictionaries used to deliver the content are freely licensed (under Createive commons or GPL licenses). In order to support as many languages as possible, we use data from a variety of sources."]
+    [:p "Many thanks to: "]
+    [:ul#sources-list
+     [:li [:a {:href "https://www.mdbg.net/chinese/dictionary?page=cedict"} "CC-CEDICT"]]
+     [:li [:a {:href "https://freedict.org"} "FreeDict"]]]]
+   [:section.section>div.container
+    [:h3.title.is-3 "Acknowledgements and inspiration"]
+    [:p "This project was heavily inspired by "
+     [:a {:href "http://nodictionaries.com"} "NoDictionaries"]]
+    ]])
+
+
 
 (defn current-page []
   [:div

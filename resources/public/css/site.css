@@ -119,4 +119,8 @@ nav.navbar {
 #textarea-container #button-container a {
   width: 100%; }
 
+#sources-list {
+  margin-top: 0.5em;
+  list-style: disc inside; }
+
 /*# sourceMappingURL=site.css.map */
