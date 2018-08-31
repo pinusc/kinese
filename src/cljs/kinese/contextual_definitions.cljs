@@ -2,6 +2,7 @@
   (:require-macros [kinese.logging :refer [log info]])
   (:require [reagent.core :as reagent]
             [ajax.core :refer [GET]]
+            [kinese.data :refer [state]]
             [kinese.words :as words]))
 ;; (def wikiurl  "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
   (def wikiurl  "https://zh.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&origin=*&generator=random")
@@ -24,12 +25,6 @@
 
 (def mtones {"1" "first" "2" "second" "3" "third" "4" "fourth" "5" "neutral" nil ""})
 
-(defonce state (reagent/atom {:text-controls {:textarea? false
-                                              :loading-random? false
-                                              :loading? false}
-                              :floating-menu {:open? false}
-                              :shown-level 2
-                              :dictionary '()}))
 
 (defn word-display
   [word characters]
@@ -116,8 +111,8 @@
 
 (defn partition-dictionary
   [n dict]
-  (reverse 
-   (map reverse 
+  (reverse
+   (map reverse
         (reduce (fn [acc word]
                   (if (or (and (> (inc (count (first acc))) n)
                                (not (special? (:text word) :normal :close)))
@@ -131,31 +126,39 @@
   (into [:div.textcontainer.is-flex]
         (loop [i 0
                tokens []
-               atoms []
+               showlevel-atoms []
                dict-list dictionary]
-          (let [current-atom (reagent/atom (if (< (:shown-level @state)
-                                                  (or (:level (first dict-list)) 7))
-                                             :first
-                                             :none))]
-            (if (empty? dict-list)
-              tokens
+          (if (empty? dict-list)
+            tokens
+            (let [next-dictentry (first dict-list)
+                  current-show-level (reagent/atom
+                                      (if (< (:shown-level @state)
+                                             (:level next-dictentry))
+                                        :first
+                                        :none))
+                  count-previous-def-lines
+                  #(apply + (map (fn [p-token p-showlevel]
+                                   (let [n-defs (->> (nth p-token 2)
+                                                     :definition
+                                                     flatten
+                                                     count)]
+                                     (if (nil? n-defs)
+                                       0
+                                       (case @p-showlevel
+                                         :none 0
+                                         :first (min 1 n-defs)
+                                         :all n-defs))))
+                                 tokens
+                                 showlevel-atoms))
+                  next-token [token-div
+                              count-previous-def-lines
+                              (update-in next-dictentry
+                                         [:definition]
+                                         #(map partition-definition %)) ;; split long definitions
+                              current-show-level]]
               (recur (inc i)
-                     (conj tokens [token-div
-                                   #(apply + (map (fn [tok ato]
-                                                    (let [n-defs (->> (nth tok 2) :definition flatten count)]
-                                                      (if (nil? n-defs)
-                                                        0
-                                                        (case @ato
-                                                          :none 0
-                                                          :first (min 1 n-defs)
-                                                          :all n-defs))))
-                                                  tokens
-                                                  atoms)) ;; function to count used defininition lines
-                                   (update-in (first dict-list)
-                                              [:definition]
-                                              #(map partition-definition %)) ;; split long definitions
-                                   current-atom])
-                     (conj atoms current-atom)
+                     (conj tokens next-token)
+                     (conj showlevel-atoms current-show-level)
                      (rest dict-list)))))))
 
 (defn definition-rows-container
@@ -201,38 +204,3 @@
                                              #(do (reset! loading-random? false)
                                                   (reset! textarea? true))))))}
             "Random text"]]])])))
-
-(defn floating-menu
-  []
-  (let [fmenu (reagent/cursor state [:floating-menu])
-        textarea? (reagent/cursor state [:text-controls :textarea?])
-        loading? (reagent/cursor state [:text-controls :loading?])
-        shown-level (reagent/cursor state [:shown-level])
-        open? (reagent/cursor fmenu [:open?])]
-    (when (:textarea? (:text-controls @state))
-      [:div#floating-menu.box
-       [:a.is-pulled-right
-        {:on-click #(swap! open? not)}
-        [:span.icon.is-medium>i.fas.fa-2x
-         {:class (if-not @open? " fa-bars has-text-info" " fa-times has-text-danger")}]]
-       (when @open?
-         [:div.content
-          [:h3.is-title.is-5 "Menu"]
-          [:div.field>input.button.is-link
-           {:type "button"
-            :value (str "Change text")
-            :on-click #(swap! textarea? not)}]
-          [:div.field
-           [:label.label "Difficulty of words to show: "]
-           [:input.slider.is-fullwidth
-            {:step 1
-             :min 0
-             :max 6
-             :default-value @shown-level
-             :type "range"
-             :on-change #(->> % .-target .-value int (reset! shown-level))}]
-           [:p.has-text-centered.has-text-weight-semibold.has-text-info
-            (cond
-              (= 0 @shown-level) "All"
-              (< 0 @shown-level 6) (str "HSK " (inc @shown-level) " or higher")
-              (= @shown-level 6) "Not in HSK")]]])])))

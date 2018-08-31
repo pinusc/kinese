@@ -1,6 +1,8 @@
 (ns kinese.core
     (:require [reagent.core :as reagent :refer [atom]]
-              [kinese.contextual-definitions :refer [contextual-definitions floating-menu]]
+              [kinese.contextual-definitions :refer [contextual-definitions]]
+              [kinese.floating-menu :refer [floating-menu]]
+              [kinese.data]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [ajax.core :refer [GET]]

@@ -9,7 +9,7 @@
                definition (map :definition entry)
                characters (:pronunciation (first entry))]
            {:definition definition
-            :level (:level (first entry))
+            :level (or (:level (first entry)) 7) ;; max level is 6, 7 means not classified
             :characters characters
             :text word}))
        words))
