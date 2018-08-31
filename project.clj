@@ -6,6 +6,8 @@
   :license {:name "GNU General Public License Version 3"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
+  :repositories {"local" {:url "file:lib" :username "" :password ""}}
+
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [ring-server "0.4.0"]
                  [reagent "0.7.0"]
@@ -21,12 +23,12 @@
                  [org.clojure/tools.trace "0.7.9"]
                  [cljs-ajax "0.6.0"]
                  [ring-transit "0.1.6"]
+                 [fnlp-core "2.1"]
                  [ring-json-response "0.2.0"]
                  [net.sf.trove4j/trove4j "3.0.3"]
                  [commons-cli "1.2"]]
 
-  :plugins [[lein-shell "0.5.0"]
-            [lein-expand-resource-paths "0.0.1"] ; globbing for fnlp
+  :plugins [[lein-expand-resource-paths "0.0.1"] ; globbing for fnlp
             [lein-environ ~environ-version]
             [lein-cljsbuild "1.1.6"]
             [yogthos/lein-sass "0.1.4"]
@@ -50,7 +52,7 @@
   :source-paths ["src/clj" "src/cljc"]
   ;; declaring resources/fnlp-core-2.1.jar creates a dir when the file is not found
   ;; which breaks the build process
-  :resource-paths ["resources" "target/cljsbuild" "resources/*"] 
+  :resource-paths ["resources" "target/cljsbuild"] 
 
   :sass {:source "src/scss" :target "resources/public/css"}
 
@@ -101,7 +103,6 @@
 
                    :source-paths ["env/dev/clj"]
                    :plugins [[lein-figwheel ~figwheel-version]]
-                   :prep-tasks [["shell" "./download-fnlp.sh"]]
 
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
@@ -110,7 +111,7 @@
 
              :uberjar {:hooks [minify-assets.plugin/hooks]
                        :source-paths ["env/prod/clj"]
-                       :prep-tasks [["shell" "./download-fnlp.sh"] "compile" ["cljsbuild" "once" "min"]]
+                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
                        :env {:production true}
                        :aot :all
                        :omit-source true}})

@@ -19,4 +19,8 @@ mkdir -p models
 [ ! -f "models/seg.m" ] && wget -q -P models/ "https://github.com/FudanNLP/fnlp/releases/download/v2.1/seg.m"
 [ ! -f "models/dep.m" ] && wget -q -P models/ "https://github.com/FudanNLP/fnlp/releases/download/v2.1/pos.m"
 
+[ ! -f "models/dep.m" ] && wget -q -P /app/models/ "https://github.com/FudanNLP/fnlp/releases/download/v2.1/dep.m"
+[ ! -f "models/seg.m" ] && wget -q -P /app/models/ "https://github.com/FudanNLP/fnlp/releases/download/v2.1/seg.m"
+[ ! -f "models/dep.m" ] && wget -q -P /app/models/ "https://github.com/FudanNLP/fnlp/releases/download/v2.1/pos.m"
+
 exit 0 # if anything it will fail at compile or run time
