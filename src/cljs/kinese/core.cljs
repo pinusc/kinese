@@ -6,12 +6,6 @@
               [ajax.core :refer [GET]]
               [clojure.string :as string]))
 
-(defn get-random-text
-  []
-  (println "foo")
-  (get (GET "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
-        "query"))
-
 (defn header []
   [:section.hero.is-primary 
    [:div.hero-body

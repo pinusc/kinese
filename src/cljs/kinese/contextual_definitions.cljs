@@ -1,13 +1,31 @@
 (ns kinese.contextual-definitions
   (:require-macros [kinese.logging :refer [log info]])
   (:require [reagent.core :as reagent]
+            [ajax.core :refer [GET]]
             [kinese.words :as words]))
+;; (def wikiurl  "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
+  (def wikiurl  "https://zh.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&origin=*&generator=random")
+
+(defn get-random-text
+  [handler]
+  (GET wikiurl
+       :handler (fn [response]
+                  (info response)
+                  (handler
+                   (-> response 
+                       (get-in ["query" "pages"])
+                       vals
+                       first
+                       (get "extract")
+                       (clojure.string/replace #"\n" " - "))))))
+
 
   (def default-text "说到古代的巾帼英雄，大家可能首先想到的是穆桂英、花木兰之类的，但这些多数都是演义小说塑造出了的。当然，真实的历史上的巾帼英雄也不是没有，比如冼夫人，她可是周总理亲评的巾帼英雄第一人哦！")
 
 (def mtones {"1" "first" "2" "second" "3" "third" "4" "fourth" "5" "neutral" nil ""})
 
 (defonce state (reagent/atom {:text-controls {:textarea? false
+                                              :loading-random? false
                                               :loading? false}
                               :floating-menu {:open? false}
                               :shown-level 2
@@ -64,8 +82,8 @@
             "(...)"])
          [:p.is-italic (clojure.string/replace (str (ffirst definition)) #"/" " / ") ]]))]])
 
-(defn submit-text [dictionary callback]
-  (words/post {:text default-text}
+(defn submit-text [dictionary text callback]
+  (words/post {:text text}
               (fn [word-map]
                 (reset! dictionary word-map)
                 (when callback (callback)))))
@@ -148,9 +166,10 @@
 (defn contextual-definitions []
   (let [dictionary (reagent/cursor state [:dictionary])
         textarea? (reagent/cursor state [:text-controls :textarea?])
-        loading? (reagent/cursor state [:text-controls :loading?])]
+        loading? (reagent/cursor state [:text-controls :loading?])
+        loading-random? (reagent/cursor state [:text-controls :loading-random?])]
     (fn []
-      [:div.container
+      [:div#textarea-container.container
        (if @textarea?
          [:div
           [definition-rows-container dictionary]]
@@ -159,19 +178,35 @@
            [:label.label "Insert text here"]
            [:div.control>textarea.textarea
             {:default-value default-text}]]
-          [:div.control>a#submit-text.button.is-info.is-pulled-right
-           {:type "button"
-            :class (when @loading? "is-loading is-success")
-            :on-click (fn []
-                        (swap! loading? not)
-                        (submit-text dictionary #(do (swap! loading? not)
-                                                     (swap! textarea? not))))}
-           "Submit text!"]])])))
+          [:div#button-container.is-pulled-right 
+           [:div.field>div.control>a.button.is-info
+            {:type "button"
+             :class (when @loading? "is-loading is-success")
+             :on-click (fn []
+                         (swap! loading? not)
+                         (submit-text dictionary
+                                      default-text
+                                      #(do (swap! loading? not)
+                                           (swap! textarea? not))))}
+            "Submit text!"]
+           [:div.field>div.control>a.button.is-primary
+            {:type "button"
+             :class (when @loading-random? " is-loading")
+             :on-click (fn []
+                         (reset! loading-random? true)
+                         (get-random-text (fn [text]
+                                            (submit-text
+                                             (reagent/cursor state [:dictionary])
+                                             text
+                                             #(do (reset! loading-random? false)
+                                                  (reset! textarea? true))))))}
+            "Random text"]]])])))
 
 (defn floating-menu
   []
   (let [fmenu (reagent/cursor state [:floating-menu])
         textarea? (reagent/cursor state [:text-controls :textarea?])
+        loading? (reagent/cursor state [:text-controls :loading?])
         shown-level (reagent/cursor state [:shown-level])
         open? (reagent/cursor fmenu [:open?])]
     (when (:textarea? (:text-controls @state))
@@ -183,7 +218,7 @@
        (when @open?
          [:div.content
           [:h3.is-title.is-5 "Menu"]
-          [:div.field>input#change-text.button.is-link
+          [:div.field>input.button.is-link
            {:type "button"
             :value (str "Change text")
             :on-click #(swap! textarea? not)}]

@@ -128,7 +128,7 @@
     white-space: nowrap;
 }
 
-input#change-text {
+#floating-menu .field > .button {
     width: 100%;
 }
 
@@ -171,4 +171,8 @@ input#change-text {
     right: 3em;
     top: 3em;
     z-index: 100;
+}
+
+#textarea-container #button-container a {
+    width: 100%;
 }
