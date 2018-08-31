@@ -12,9 +12,11 @@
 (defn navbar []
   [:nav.navbar
    [:div.navbar-brand
-    [:a.navbar-item "Kinesee"]]
+    [:a.navbar-item
+     {:href "/"}
+     "Kinese"]]
    [:div.navbar-menu
-    [:div.navbar-start 
+    [:div.navbar-end
      [:a.navbar-item
       {:href "/about"}
       "About"]]]])

@@ -96,7 +96,7 @@ nav {
 #floating-menu {
   position: fixed;
   right: 3em;
-  top: 3em;
+  top: 6em;
   z-index: 100;
   opacity: 0.4; }
   #floating-menu:hover {
