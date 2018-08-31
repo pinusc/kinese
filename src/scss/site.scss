@@ -1,9 +1,17 @@
-nav {
+nav.navbar {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    color: white;
+    background-color: transparent;
+
+    a:hover {
+        color: inherit;
+    }
+
+    * {
+        color: inherit;
+    }
 }
 
 .hero-body .container {

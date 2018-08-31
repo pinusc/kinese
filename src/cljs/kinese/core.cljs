@@ -9,8 +9,27 @@
 
 (def page (reagent/cursor state [:page]))
 
+(defn home-page []
+  [:div
+   [:section.hero.is-info.is-bold.is-overlay
+    [:div.hero-body>div.container
+     [:div.columns
+      [:div#title-column.column.is-half
+       [:h1.title.is-2.is-inline "Kinese, "]
+       [:h2.subtitle.is-3.is-inline "a better approach to language learning"]]
+      [:div.column.is-half
+       [textarea]]]]]])
+
+(defn about-page []
+  [:div
+   [:section.section
+    [:h1.title.is-1 "About kinese"]
+    [:div ]]])
+
 (defn navbar []
-  [:nav.navbar
+  [:nav.navbar.is-transparent.is-fixed-top
+   (when (= @page #'home-page)
+     {:style {:color "white"}})
    [:div.navbar-brand
     [:a.navbar-item
      {:href "/"}
@@ -21,27 +40,12 @@
       {:href "/about"}
       "About"]]]])
 
-(defn home-page []
-  [:div
-   [:section.hero.is-info.is-bold.is-overlay
-    [navbar]                   ; in home-page navbar is not displayed by default
-    [:div.hero-body>div.container
-     [:div.columns
-      [:div#title-column.column.is-half
-       [:h1.title.is-2.is-inline "Kinese, "]
-       [:h2.subtitle.is-3.is-inline "a better approach to language learning"]]
-      [:div.column.is-half
-       [textarea]]]]]])
-
-(defn about-page []
-  [:div [:h2 "About kinese"]
-   [:div [:a {:href "/"} "go to the home page"]]])
-
 
 (defn current-page []
   [:div
-   (when-not (= @page #'home-page)
-     [navbar])
+   ;; (when-not (= @page #'home-page)
+   ;;   [navbar])
+   [navbar]                   ; in home-page navbar is not displayed by default
    [@page]])
 
 (secretary/defroute "/" []
