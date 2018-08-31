@@ -5,6 +5,6 @@
                               :text-controls {:textarea? false
                                               :loading-random? false
                                               :loading? false}
-                              :floating-menu {:open? false}
+                              :floating-menu {:open? true}
                               :shown-level 2
                               :dictionary '()}))

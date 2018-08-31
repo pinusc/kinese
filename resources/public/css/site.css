@@ -97,7 +97,10 @@ nav {
   position: fixed;
   right: 3em;
   top: 3em;
-  z-index: 100; }
+  z-index: 100;
+  opacity: 0.4; }
+  #floating-menu:hover {
+    opacity: 1; }
   #floating-menu .field > .button {
     width: 100%; }
 

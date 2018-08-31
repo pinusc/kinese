@@ -26,9 +26,10 @@
         open? (reagent/cursor state [:floating-menu :open?])]
     (fn []
       [:div#floating-menu.box
+       (when-not @open? {:class "is-paddingless"})
        [:a.is-pulled-right
         {:on-click #(swap! open? not)}
-        [:span.icon.is-medium>i.fas.fa-2x
+        [:span.icon.is-medium>i.fas.fa.fa-lg
          {:class (if-not @open? " fa-bars has-text-info" " fa-times has-text-danger")}]]
        (when @open?
          [:div.content

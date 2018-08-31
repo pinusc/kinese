@@ -134,6 +134,10 @@ nav {
     right: 3em;
     top: 3em;
     z-index: 100;
+    opacity: 0.4;
+    &:hover {
+        opacity: 1;
+    }
     .field > .button {
         width: 100%;
     }
