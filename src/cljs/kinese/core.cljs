@@ -27,9 +27,9 @@
     [navbar]                   ; in home-page navbar is not displayed by default
     [:div.hero-body>div.container
      [:div.columns
-      [:div.column.is-half
+      [:div#title-column.column.is-half
        [:h1.title.is-2.is-inline "Kinese, "]
-       [:h2.subtitle.is-3.is-inline "a better approach to chinese learning"]]
+       [:h2.subtitle.is-3.is-inline "a better approach to language learning"]]
       [:div.column.is-half
        [textarea]]]]]])
 

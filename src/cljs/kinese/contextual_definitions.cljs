@@ -181,11 +181,12 @@
     (fn []
       [:div#textarea-container
        [:div.field
-        [:label.label "Insert text here"]
+        [:label.label.has-text-centered "Try me!"]
         [:div.control>textarea.textarea
-         {:default-value default-text}]]
-       [:div#button-container.is-pulled-right 
-        [:div.field>div.control>a.button.is-info
+         {:default-value default-text
+          :rows 13}]]
+       [:div#button-container.has-text-centered
+        [:div.field>div.control>a.button.is-danger
          {:type "button"
           :class (when @loading? "is-loading is-success")
           :href "/contextual"
@@ -194,16 +195,18 @@
                       (submit-text dictionary
                                    default-text
                                    #(swap! loading? not)))}
-         "Submit text!"]
-        [:div.field>div.control>a.button.is-primary
-         {:type "button"
-          :class (when @loading-random? " is-loading")
-          :href "/contextual"
-          :on-click (fn []
-                      (reset! loading-random? true)
-                      (get-random-text (fn [text]
-                                         (submit-text
-                                          (reagent/cursor state [:dictionary])
-                                          text
-                                          #(reset! loading-random? false)))))}
-         "Random text"]]])))
+         "Read this text!"]
+        [:div.field>div.control
+         [:label.label.has-text-centered "or"]
+         [:a.button.is-primary
+          {:type "button"
+           :class (when @loading-random? " is-loading")
+           :href "/contextual"
+           :on-click (fn []
+                       (reset! loading-random? true)
+                       (get-random-text (fn [text]
+                                          (submit-text
+                                           (reagent/cursor state [:dictionary])
+                                           text
+                                           #(reset! loading-random? false)))))}
+          "Read a random text"]]]])))

@@ -37,5 +37,5 @@
           [:div.field>a.button.is-link
            {:type "button"
             :href "/"}
-           "Change text"]
+           "Read another text"]
           [difficulty-slider shown-level]])])))

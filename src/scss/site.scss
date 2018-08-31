@@ -143,7 +143,20 @@ nav {
     }
 }
 
-#textarea-container #button-container a {
-    width: 100%;
+#title-column {
+    padding-top: 5em;
+}
+
+#textarea-container {
+    textarea {
+        max-height: 60vh;
+        min-height: 20em;
+    }
+    .field .label {
+        color: white;
+    }
+    #button-container a {
+        width: 100%;
+    }
 }
 
