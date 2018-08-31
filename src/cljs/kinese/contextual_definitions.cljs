@@ -4,6 +4,7 @@
             [ajax.core :refer [GET]]
             [kinese.floating-menu :refer [floating-menu]]
             [kinese.data :refer [state]]
+            [kinese.components]
             [secretary.core :as secretary :include-macros true]
             [kinese.words :as words]))
 ;; (def wikiurl  "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
@@ -169,9 +170,11 @@
         (map definition-row (partition-dictionary 10 @dictionary))))
 
 (defn contextual-definitions []
-  [:div#contextual-definitions.container
-   [floating-menu]
-   [definition-rows-container (reagent/cursor state [:dictionary])]])
+  [:div.section
+   [kinese.components/navbar]
+   [:div#contextual-definitions.container
+    [floating-menu]
+    [definition-rows-container (reagent/cursor state [:dictionary])]]])
 
 (defn textarea []
   (let [dictionary (reagent/cursor state [:dictionary])

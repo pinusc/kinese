@@ -3,15 +3,6 @@ nav.navbar {
     top: 0;
     left: 0;
     right: 0;
-    background-color: transparent;
-
-    a:hover {
-        color: inherit;
-    }
-
-    * {
-        color: inherit;
-    }
 }
 
 .hero-body .container {
@@ -135,6 +126,10 @@ nav.navbar {
             }
         }
     }
+}
+
+#contextual-definitions {
+    padding-top: 5em;
 }
 
 #floating-menu {

@@ -2,6 +2,7 @@
     (:require [reagent.core :as reagent :refer [atom]]
               [kinese.contextual-definitions :refer [contextual-definitions textarea]]
               [kinese.data :refer [state]]
+              [kinese.components]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [ajax.core :refer [GET]]
@@ -12,6 +13,7 @@
 (defn home-page []
   [:div
    [:section.hero.is-info.is-bold.is-overlay
+    [kinese.components/navbar]
     [:div.hero-body>div.container
      [:div.columns
       [:div#title-column.column.is-half
@@ -22,30 +24,15 @@
 
 (defn about-page []
   [:div
+   [:section.hero.is-info.is-medium
+    [kinese.components/navbar]
+    [:div.hero-body
+     [:h1.title.is-1 "About kinese"]]]
    [:section.section
-    [:h1.title.is-1 "About kinese"]
-    [:div ]]])
-
-(defn navbar []
-  [:nav.navbar.is-transparent.is-fixed-top
-   (when (= @page #'home-page)
-     {:style {:color "white"}})
-   [:div.navbar-brand
-    [:a.navbar-item
-     {:href "/"}
-     [:h1.title.is-3 "Kinese"]]]
-   [:div.navbar-menu
-    [:div.navbar-end
-     [:a.navbar-item
-      {:href "/about"}
-      "About"]]]])
-
+    [:h1.title.is-1 "About kinese"]]])
 
 (defn current-page []
   [:div
-   ;; (when-not (= @page #'home-page)
-   ;;   [navbar])
-   [navbar]                   ; in home-page navbar is not displayed by default
    [@page]])
 
 (secretary/defroute "/" []

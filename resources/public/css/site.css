@@ -2,12 +2,7 @@ nav.navbar {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  background-color: transparent; }
-  nav.navbar a:hover {
-    color: inherit; }
-  nav.navbar * {
-    color: inherit; }
+  right: 0; }
 
 .hero-body .container {
   position: absolute;
@@ -96,6 +91,9 @@ nav.navbar {
       margin-top: 0; }
       .definition.content ul li:not(:first-child) {
         margin-left: 1em; }
+
+#contextual-definitions {
+  padding-top: 5em; }
 
 #floating-menu {
   position: fixed;
