@@ -14,7 +14,7 @@
    [:div.navbar-brand
     [:a.navbar-item
      {:href "/"}
-     "Kinese"]]
+     [:h1.title.is-3 "Kinese"]]]
    [:div.navbar-menu
     [:div.navbar-end
      [:a.navbar-item
