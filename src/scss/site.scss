@@ -1,3 +1,18 @@
+nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    color: white;
+}
+
+.hero-body .container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
 .section {
     position: relative;
 }
@@ -127,3 +142,4 @@
 #textarea-container #button-container a {
     width: 100%;
 }
+

@@ -2,7 +2,9 @@
   (:require-macros [kinese.logging :refer [log info]])
   (:require [reagent.core :as reagent]
             [ajax.core :refer [GET]]
+            [kinese.floating-menu :refer [floating-menu]]
             [kinese.data :refer [state]]
+            [secretary.core :as secretary :include-macros true]
             [kinese.words :as words]))
 ;; (def wikiurl  "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
   (def wikiurl  "https://zh.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&origin=*&generator=random")
@@ -167,40 +169,41 @@
         (map definition-row (partition-dictionary 10 @dictionary))))
 
 (defn contextual-definitions []
+  [:div#contextual-definitions.container
+   [floating-menu]
+   [definition-rows-container (reagent/cursor state [:dictionary])]])
+
+(defn textarea []
   (let [dictionary (reagent/cursor state [:dictionary])
         textarea? (reagent/cursor state [:text-controls :textarea?])
         loading? (reagent/cursor state [:text-controls :loading?])
         loading-random? (reagent/cursor state [:text-controls :loading-random?])]
     (fn []
-      [:div#textarea-container.container
-       (if @textarea?
-         [:div
-          [definition-rows-container dictionary]]
-         [:div 
-          [:div.field
-           [:label.label "Insert text here"]
-           [:div.control>textarea.textarea
-            {:default-value default-text}]]
-          [:div#button-container.is-pulled-right 
-           [:div.field>div.control>a.button.is-info
-            {:type "button"
-             :class (when @loading? "is-loading is-success")
-             :on-click (fn []
-                         (swap! loading? not)
-                         (submit-text dictionary
-                                      default-text
-                                      #(do (swap! loading? not)
-                                           (swap! textarea? not))))}
-            "Submit text!"]
-           [:div.field>div.control>a.button.is-primary
-            {:type "button"
-             :class (when @loading-random? " is-loading")
-             :on-click (fn []
-                         (reset! loading-random? true)
-                         (get-random-text (fn [text]
-                                            (submit-text
-                                             (reagent/cursor state [:dictionary])
-                                             text
-                                             #(do (reset! loading-random? false)
-                                                  (reset! textarea? true))))))}
-            "Random text"]]])])))
+      [:div#textarea-container
+       [:div.field
+        [:label.label "Insert text here"]
+        [:div.control>textarea.textarea
+         {:default-value default-text}]]
+       [:div#button-container.is-pulled-right 
+        [:div.field>div.control>a.button.is-info
+         {:type "button"
+          :class (when @loading? "is-loading is-success")
+          :on-click (fn []
+                      (swap! loading? not)
+                      (submit-text dictionary
+                                   default-text
+                                   #(do (swap! loading? not)
+                                        (secretary/dispatch! "/contextual"))))}
+         "Submit text!"]
+        [:div.field>div.control>a.button.is-primary
+         {:type "button"
+          :class (when @loading-random? " is-loading")
+          :on-click (fn []
+                      (reset! loading-random? true)
+                      (get-random-text (fn [text]
+                                         (submit-text
+                                          (reagent/cursor state [:dictionary])
+                                          text
+                                          #(do (reset! loading-random? false)
+                                               (secretary/dispatch! "/contextual"))))))}
+         "Random text"]]])))

@@ -1,5 +1,6 @@
 (ns kinese.floating-menu
   (:require [reagent.core :as reagent]
+            [secretary.core :as secretary :include-macros true]
             [kinese.data :refer [state]]))
 
 (defn difficulty-slider
@@ -21,10 +22,9 @@
 
 (defn floating-menu
   []
-  (let [textarea? (reagent/cursor state [:text-controls :textarea?])
-        shown-level (reagent/cursor state [:shown-level])
+  (let [shown-level (reagent/cursor state [:shown-level])
         open? (reagent/cursor state [:floating-menu :open?])]
-    (when (:textarea? (:text-controls @state))
+    (fn []
       [:div#floating-menu.box
        [:a.is-pulled-right
         {:on-click #(swap! open? not)}
@@ -36,5 +36,5 @@
           [:div.field>input.button.is-link
            {:type "button"
             :value (str "Change text")
-            :on-click #(swap! textarea? not)}]
+            :on-click #(secretary/dispatch! "/")}]
           [difficulty-slider shown-level]])])))
