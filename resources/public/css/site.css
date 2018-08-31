@@ -1,178 +1,94 @@
-.def-buttons {
-    width: 100%;
-    position: absolute;
-    top: 0;
-}
-
-.def-buttons > .button:first-child {
-    float: left;
-}
-
-.def-buttons > .button:last-child {
-    float: right;
-}
-
 .section {
-    position: relative;
-}
-
-#textarea {
-    display: inline-block;
-    /* border: none !important; */
-    /* box-shadow: none !important; */
-    max-height: none;
-    height: auto;
-    min-height: 4em;
-}
-
-[contentEditable=false] {
-    cursor: pointer;
-}
+  position: relative; }
 
 .button {
-    margin-top: 1em;
-    margin: auto;
-}
-
-#submit-button {
-    width: 100%;
-    margin-top: 0.5em;
-}
+  margin-top: 1em;
+  margin: auto; }
 
 .first {
-    color: red;
-}
+  color: red; }
 
 .neutral {
-    color: black;
-}
+  color: black; }
+
 .fourth {
-    color: purple;
-}
+  color: purple; }
+
 .third {
-    color: blue;
-}
+  color: blue; }
+
 .second {
-    color: green;
-}
+  color: green; }
 
 .nil {
-    color: #999;
-}
-.selected {
-    background-color: orange!important;
-}
-
-.selected span {
-    color: white!important;
-}
+  color: #999; }
 
 .textcontainer {
-    margin-top: 3em;
-}
+  margin-top: 3em; }
 
 .token .word {
-    display: inline-block;
-    border-radius: 25%;
-}
-
-.token .word a {
-    /* text-decoration: underline; */
-    color: green;
-}
-
-.token .word a.no-def {
+  display: inline-block;
+  border-radius: 25%;
+  margin-right: 1rem; }
+  .token .word a {
+    color: green; }
+  .token .word a.nodef {
     text-decoration: none;
-    color: gray;
-}
-
-.token .word {
-    margin-right: 1rem;
-}
-
-.token .word div > div > span.metadata {
+    color: gray; }
+  .token .word div > div > span.metadata {
     position: absolute;
     top: -1em;
     left: 50%;
-    transform: translate(-50%, 0);
-}
-
-.token:hover .definition p, .token:hover .definition ul li {
-    /* font-weight: 600 !important; */
-    /* font-style: italic !important; */
-    background-color: #eee;
-    border-radius: 3px;
-}
+    transform: translate(-50%, 0); }
+  .token .word .charcontainer {
+    margin-top: 1em; }
+    .token .word .charcontainer .char {
+      display: inline-block;
+      position: relative; }
+      .token .word .charcontainer .char span.metadata {
+        font-size: x-small; }
 
 .token .definition p, .token .definition ul li {
-    padding-right: 5px;
-    padding-left: 5px;
-}
+  padding-right: 5px;
+  padding-left: 5px; }
 
-.charcontainer {
-    margin-top: 1em;
-}
+.token:hover .definition p, .token:hover .definition ul li {
+  background-color: #eee;
+  border-radius: 3px; }
 
-.charcontainer .char {
-    display: inline-block;
-    position: relative;
-    /* padding-right: 0.05em; */
-}
-
-.char span.metadata {
-    font-size: x-small;
-}
-
-.definition {
-    position: absolute;
-    white-space: nowrap;
-}
-
-#floating-menu .field > .button {
-    width: 100%;
-}
-
-.definition.content > div {
-    position: relative;
-}
-
-.definition.content > div > a {
-    position: absolute;
-    left: 100%;
-    padding-left: 0.5em;
-    color: green;
-}
-
-.definition.content ol {
+.definition.content {
+  position: absolute;
+  white-space: nowrap; }
+  .definition.content > div {
+    position: relative; }
+    .definition.content > div > a {
+      position: absolute;
+      left: 100%;
+      padding-left: 0.5em;
+      color: green; }
+  .definition.content ol {
     margin-top: 0;
-    margin-left: 0.5em;
-}
-
-.definition.content ol > li {
-    margin-top: 0;
-}
-
-.definition.content ul {
+    margin-left: 0.5em; }
+    .definition.content ol > li {
+      margin-top: 0; }
+  .definition.content ul {
     margin-top: 0;
     margin-left: 0;
-    list-style: none;
-}
-
-.definition.content ul li {
-    margin-top: 0;
-}
-
-.definition.content ul li:not(:first-child) {
-    margin-left: 1em;
-}
+    list-style: none; }
+    .definition.content ul li {
+      margin-top: 0; }
+      .definition.content ul li:not(:first-child) {
+        margin-left: 1em; }
 
 #floating-menu {
-    position: fixed;
-    right: 3em;
-    top: 3em;
-    z-index: 100;
-}
+  position: fixed;
+  right: 3em;
+  top: 3em;
+  z-index: 100; }
+  #floating-menu .field > .button {
+    width: 100%; }
 
 #textarea-container #button-container a {
-    width: 100%;
-}
+  width: 100%; }
+
+/*# sourceMappingURL=site.css.map */

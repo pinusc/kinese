@@ -29,6 +29,7 @@
             [lein-expand-resource-paths "0.0.1"] ; globbing for fnlp
             [lein-environ ~environ-version]
             [lein-cljsbuild "1.1.6"]
+            [yogthos/lein-sass "0.1.4"]
             [lein-asset-minifier "0.2.7"
              :exclusions [org.clojure/clojure]]]
 
@@ -50,6 +51,8 @@
   ;; declaring resources/fnlp-core-2.1.jar creates a dir when the file is not found
   ;; which breaks the build process
   :resource-paths ["resources" "target/cljsbuild" "resources/*"] 
+
+  :sass {:source "src/scss" :target "resources/public/css"}
 
   :minify-assets
   {:assets
