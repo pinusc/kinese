@@ -33,8 +33,8 @@
        (when @open?
          [:div.content
           [:h3.is-title.is-5 "Menu"]
-          [:div.field>input.button.is-link
+          [:div.field>a.button.is-link
            {:type "button"
-            :value (str "Change text")
-            :on-click #(secretary/dispatch! "/")}]
+            :href "/"}
+           "Change text"]
           [difficulty-slider shown-level]])])))

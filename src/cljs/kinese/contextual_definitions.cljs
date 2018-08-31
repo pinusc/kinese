@@ -188,22 +188,22 @@
         [:div.field>div.control>a.button.is-info
          {:type "button"
           :class (when @loading? "is-loading is-success")
+          :href "/contextual"
           :on-click (fn []
                       (swap! loading? not)
                       (submit-text dictionary
                                    default-text
-                                   #(do (swap! loading? not)
-                                        (secretary/dispatch! "/contextual"))))}
+                                   #(swap! loading? not)))}
          "Submit text!"]
         [:div.field>div.control>a.button.is-primary
          {:type "button"
           :class (when @loading-random? " is-loading")
+          :href "/contextual"
           :on-click (fn []
                       (reset! loading-random? true)
                       (get-random-text (fn [text]
                                          (submit-text
                                           (reagent/cursor state [:dictionary])
                                           text
-                                          #(do (reset! loading-random? false)
-                                               (secretary/dispatch! "/contextual"))))))}
+                                          #(reset! loading-random? false)))))}
          "Random text"]]])))
