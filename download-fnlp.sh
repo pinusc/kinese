@@ -3,6 +3,9 @@
 [ ! -f "resources/fnlp-core-2.1.jar" ] && wget -q -P resources/ "https://repo1.maven.org/maven2/org/fnlp/fnlp-core/2.1/fnlp-core-2.1.jar"
 
 echo "================================="
+echo "pwd $(pwd)"
+echo "ls $(ls)"
+echo "ls resources/ $(ls resources/)"
 echo ""
 echo ""
 echo "Downloaded fnlp-core-2.1.jar"
