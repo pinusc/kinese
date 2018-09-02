@@ -13,10 +13,10 @@
 
 (def mount-target
   [:div#app
-      [:h3 "ClojureScript has not been compiled!"]
-      [:p "please run "
-       [:b "lein figwheel"]
-       " in order to start the compiler"]])
+   [:div#no-js.modal.is-active
+    [:div.modal-content
+     [:h3 "You need to enable JavaScript in order to see this website!"]
+     [:p "Either you disabled JavaScript or it hasn't loaded yet"]]]])
 
 (defn head []
   [:head
