@@ -40,7 +40,7 @@
 
 (defn karacter [arg]
   ;; (println "kn" (count (map #(nth (first (get dict (str %))) 1) (:text arg))))
-  (let [text (:text arg)
+  (let [text arg
         segmented-text (segment text)]
     (json-response {:karacters (mapv #(get dict (str %)) text) 
                     :segmented-text (reduce (fn [li word]
@@ -58,7 +58,7 @@
 (defroutes routes
   (GET "/" [] (loading-page))
   (GET "/about" [] (loading-page))
-  (POST "/kar" [& _ :as {params :params} ] (karacter params))
+  (GET "/api/kar" [text & args] (karacter text))
   (POST "/seg" [& _ :as {params :params} ] (segment params))
   (resources "/")
   (not-found "Not Found"))

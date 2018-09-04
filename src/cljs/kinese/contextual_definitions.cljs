@@ -81,7 +81,7 @@
          [:p.is-italic (clojure.string/replace (str (ffirst definition)) #"/" " / ") ]]))]])
 
 (defn submit-text [dictionary text callback]
-  (words/post {:text text}
+  (words/get-words {:text text}
               (fn [word-map]
                 (reset! dictionary word-map)
                 (when callback (callback)))))
