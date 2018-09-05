@@ -1,6 +1,8 @@
 # kinese
 *kinese* is a webapp to help mandarin learners to read chinese. The backend is written in clojure+ring, the frontend in clojurescript+reagent.
 
+Try it out online at [kinese.gstelluto.com](kinese.gstelluto.com)!
+
 ## Features
 - Character tone coloring
 - Word segmentation
