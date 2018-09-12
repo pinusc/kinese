@@ -24,7 +24,7 @@
    [:meta {:name "viewport"
            :content "width=device-width, initial-scale=1"}]
    (include-css (if (env :dev) "/css/site.css" "/css/site.min.css")
-                "/css/bulma.css"
+                "/css/bulma.min.css"
                 "/css/bulma-slider.min.css"
                 "https://use.fontawesome.com/releases/v5.3.1/css/all.css")])
 
