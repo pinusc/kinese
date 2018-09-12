@@ -192,24 +192,24 @@
         [:div.field>div.control>a.button.is-danger
          {:type "button"
           :class (when @loading? "is-loading is-success")
-          :href "/contextual"
           :on-click (fn []
                       (swap! loading? not)
                       (submit-text dictionary
                                    default-text
-                                   #(swap! loading? not)))}
+                                   #(do (secretary/dispatch! "/contextual")
+                                        (swap! loading? not))))}
          "Read this text!"]
         [:div.field>div.control
          [:label.label.has-text-centered "or"]
          [:a.button.is-primary
           {:type "button"
            :class (when @loading-random? " is-loading")
-           :href "/contextual"
            :on-click (fn []
                        (reset! loading-random? true)
                        (get-random-text (fn [text]
                                           (submit-text
                                            (reagent/cursor state [:dictionary])
                                            text
-                                           #(reset! loading-random? false)))))}
+                                           #(do (secretary/dispatch! "/contextual")
+                                                (reset! loading-random? false))))))}
           "Read a random text"]]]])))
