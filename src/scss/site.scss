@@ -1,3 +1,9 @@
+@media all and (orientation:landscape) {
+    #not-landscape {
+        display: none;
+    }
+}
+
 nav.navbar {
     position: absolute;
     top: 0;

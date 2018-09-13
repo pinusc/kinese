@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="12.532277mm"
+   height="7.5595312mm"
+   viewBox="0 0 12.532277 7.5595312"
+   version="1.1"
+   id="svg3815"
+   inkscape:version="0.92.2 2405546, 2018-03-11"
+   sodipodi:docname="rotate_to_landscape.svg">
+  <defs
+     id="defs3809" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7.9195959"
+     inkscape:cx="21.276863"
+     inkscape:cy="17.112718"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1344"
+     inkscape:window-height="752"
+     inkscape:window-x="1446"
+     inkscape:window-y="6"
+     inkscape:window-maximized="1">
+    <sodipodi:guide
+       position="-0.63783192,0.011819292"
+       orientation="0,1"
+       id="guide3862"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3812">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-21.509205,-100.46419)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:FontAwesome;-inkscape-font-specification:FontAwesome;letter-spacing:0px;word-spacing:0px;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       x="21.509205"
+       y="108.02371"
+       id="text3819"><tspan
+         sodipodi:role="line"
+         id="tspan3825"
+         x="21.509205"
+         y="108.02371"></tspan></text>
+    <g
+       aria-label=""
+       transform="matrix(-0.53247842,0.53320594,0.53320594,0.53247842,-44.107504,63.81703)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.56727409px;line-height:1.25;font-family:FontAwesome;-inkscape-font-specification:FontAwesome;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13918185"
+       id="text3829">
+      <path
+         d="m -31.06074,101.34026 c -0.14291,0.14291 -0.277796,0.28465 -0.371904,0.47628 -0.101522,0.20024 -0.164691,0.36247 -0.164691,0.57787 0,0.20297 0.0373,0.39766 0.11184,0.58407 0.0725,0.1864 0.17709,0.35209 0.31378,0.49708 l 0.42873,-0.42563 c 0.0621,-0.0642 0.13359,-0.0787 0.21437,-0.0435 0.0828,0.0352 0.12427,0.0963 0.12427,0.1833 v 1.39182 c 0,0.0538 -0.0197,0.10045 -0.059,0.1398 -0.0393,0.0393 -0.0859,0.059 -0.13981,0.059 h -1.39182 c -0.087,0 -0.14808,-0.0414 -0.18329,-0.12427 -0.0352,-0.0808 -0.0207,-0.15223 0.0435,-0.21436 l 0.40077,-0.40388 c -0.20919,-0.22161 -0.37074,-0.47429 -0.48466,-0.75804 -0.11598,-0.28582 -0.17397,-0.58096 -0.17397,-0.88542 0,-0.3231 0.06734,-0.61024 0.228724,-0.88665 0.169448,-0.29022 0.366749,-0.48517 0.580079,-0.6985 z"
+         style="stroke-width:0.13918185"
+         id="path3841"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccsccccsscssccccsscc" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:FontAwesome;-inkscape-font-specification:FontAwesome;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="-108.02372"
+       y="-26.481958"
+       id="text3819-0"
+       transform="matrix(0,-1,-1,0,0,0)"><tspan
+         style="stroke-width:0.26458332"
+         sodipodi:role="line"
+         id="tspan3825-5"
+         x="-108.02372"
+         y="-26.481958"></tspan></text>
+  </g>
+</svg>

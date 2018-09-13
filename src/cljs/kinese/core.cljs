@@ -57,6 +57,12 @@
 
 (defn current-page []
   [:div
+   [:div#not-landscape.modal.has-background-warning.is-active
+    [:div.modal-content
+     [:h2.title.is-2 "This page looks best in landscape mode!"]
+     [:div.level>div.level-item
+      [:figure.image.is-128x128
+       [:img {:src "/rotate_to_landscape.svg"}]]]]]
    [@page]])
 
 (secretary/defroute "/" []

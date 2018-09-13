@@ -5,7 +5,7 @@
    [:div.navbar-brand
     [:a.navbar-item
      {:href "/"}
-     [:h1.title.is-3 "Kinese"]]]
+     [:img {:src "/logo.svg" :alt "Kinese: a smarter way to immerse yourself"}]]]
    [:div.navbar-menu
     [:div.navbar-end
      [:a.navbar-item

@@ -14,9 +14,9 @@
 (def mount-target
   [:div#app
    [:div#no-js.modal.is-active
+    {:style "background-color: #276cda;"}
     [:div.modal-content
-     [:h3 "You need to enable JavaScript in order to see this website!"]
-     [:p "Either you disabled JavaScript or it hasn't loaded yet"]]]])
+     [:img {:src "/logo.svg"}]]]])
 
 (defn head []
   [:head
@@ -31,7 +31,8 @@
 (defn loading-page []
   (html5
     (head)
-    [:body {:class "body-container"}
+    [:body
+     {:class "body-container"}
      mount-target
      (include-js "/js/app.js")]))
 
