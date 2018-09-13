@@ -47,7 +47,7 @@
    the height (in em) at which to print it.
    `show-level` is a `reagent/atom` of possible values [:none :first :all]
    `definition` is a collection of strings"
-  [:div.token {:key i :style {:height (str (+ 3 (* 1.5 (+ (i) (case @show-level :first 1 :all (count definition) :none 0)))) "em")}}
+  [:div.token.is-inline-block {:key i :style {:height (str (+ 3 (* 1.5 (+ (i) (case @show-level :first 1 :all (count definition) :none 0)))) "em")}}
    [:div.word
     [:a
      {:class (when (empty? definition) " no-def")
@@ -126,7 +126,7 @@
 
 (defn definition-row
   [dictionary]
-  (into [:div.textcontainer.is-flex]
+  (into [:div.textcontainer]
         (loop [i 0
                tokens []
                showlevel-atoms []
@@ -172,7 +172,7 @@
 (defn contextual-definitions []
   [:div.section
    [kinese.components/navbar]
-   [:div#contextual-definitions.container
+   [:div#contextual-definitions.container {:style {:overflow-x "scroll"}}
     [floating-menu]
     [definition-rows-container (reagent/cursor state [:dictionary])]]])
 

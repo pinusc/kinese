@@ -49,6 +49,7 @@ nav.navbar {
 
 .textcontainer {
     margin-top: 3em;
+    white-space: nowrap;
 }
 
 .token {
@@ -134,8 +135,10 @@ nav.navbar {
     }
 }
 
-#contextual-definitions {
-    padding-top: 5em;
+@media screen and (min-width: 1215px) {
+    #contextual-definitions {
+        padding-top: 3em;
+    }
 }
 
 #floating-menu {
