@@ -10,6 +10,9 @@
 
 (def dict (read-dict "cedict_ts.u8"))
 (def fnlp (org.fnlp.nlp.cn.CNFactory/getInstance "models"))
+(def text-library
+  (-> (slurp "text-library.u8")
+      (string/split #"#####")))
 
 (def mount-target
   [:div#app
@@ -39,6 +42,11 @@
 (defn segment [text]
   (into [] (.seg fnlp text)))
 
+(defn random-text
+  []
+  (json-response {:text (text-library
+                         (rand-int (count text-library)))}))
+
 (defn karacter [arg]
   ;; (println "kn" (count (map #(nth (first (get dict (str %))) 1) (:text arg))))
   (let [text arg
@@ -60,7 +68,7 @@
   (GET "/" [] (loading-page))
   (GET "/about" [] (loading-page))
   (GET "/api/kar" [text & args] (karacter text))
-  (POST "/seg" [& _ :as {params :params} ] (segment params))
+  (GET "/api/random" [] (random-text))
   (resources "/")
   (not-found "Not Found"))
 

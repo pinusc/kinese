@@ -8,23 +8,15 @@
             [secretary.core :as secretary :include-macros true]
             [kinese.words :as words]))
 ;; (def wikiurl  "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
-  (def wikiurl  "https://zh.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&origin=*&generator=random")
+  (def wikiurl  "https://wuu.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&generator=random&origin=*")
 
 (defn get-random-text
   [handler]
-  (GET wikiurl
-       :handler (fn [response]
-                  (info response)
-                  (handler
-                   (-> response 
-                       (get-in ["query" "pages"])
-                       vals
-                       first
-                       (get "extract")
-                       (clojure.string/replace #"\n" " - "))))))
+  (GET "/api/random"
+       :handler #(handler (get % "text")))
 
 
-  (def default-text "说到古代的巾帼英雄，大家可能首先想到的是穆桂英、花木兰之类的，但这些多数都是演义小说塑造出了的。当然，真实的历史上的巾帼英雄也不是没有，比如冼夫人，她可是周总理亲评的巾帼英雄第一人哦！")
+  (def default-text "说到古代的巾帼英雄，大家可能首先想到的是穆桂英、花木兰之类的，但这些多数都是演义小说塑造出了的。当然，真实的历史上的巾帼英雄也不是没有，比如冼夫人，她可是周总理亲评的巾帼英雄第一人哦！"))
 
 (def mtones {"1" "first" "2" "second" "3" "third" "4" "fourth" "5" "neutral" nil ""})
 
