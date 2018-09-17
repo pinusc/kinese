@@ -6,13 +6,16 @@
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [ajax.core :refer [GET]]
-              [clojure.string :as string]))
+              [goog.events :as events]
+              [goog.history.EventType :as EventType]
+              [clojure.string :as string])
+    (:import goog.History))
 
 (def page (reagent/cursor state [:page]))
 
 (defn home-page []
   [:div
-   [:section.hero.is-info.is-bold.is-overlay
+   [:section.hero.is-info.is-bold
     [kinese.components/navbar]
     [:div.hero-body>div.container
      [:div.columns
@@ -88,3 +91,8 @@
        (secretary/locate-route path))})
   (accountant/dispatch-current!)
   (mount-root))
+
+;; Quick and dirty history configuration.
+(let [h (History.)]
+  (goog.events/listen h EventType/NAVIGATE #(secretary/dispatch! (.-token %)))
+  (doto h (.setEnabled true)))

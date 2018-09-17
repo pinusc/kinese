@@ -6,7 +6,7 @@
    [:div.navbar-brand
     [:a.navbar-item
      {:on-click #(secretary/dispatch! "/")}
-     [:img {:src "/logo.svg" :alt "Kinese: a smarter way to immerse yourself"}]]]
+     [:h3.title.is-3 "Kinese"]]]
    [:div.navbar-menu
     [:div.navbar-end
      [:a.navbar-item

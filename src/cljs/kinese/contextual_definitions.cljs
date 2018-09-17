@@ -7,16 +7,13 @@
             [kinese.components]
             [secretary.core :as secretary :include-macros true]
             [kinese.words :as words]))
-;; (def wikiurl  "https://zh.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=random&prop=extracts&exlimit=1&exchars=200&exintro=true&explaintext=true")
-  (def wikiurl  "https://wuu.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&generator=random&origin=*")
+(def default-text "说到古代的巾帼英雄，大家可能首先想到的是穆桂英、花木兰之类的，但这些多数都是演义小说塑造出了的。当然，真实的历史上的巾帼英雄也不是没有，比如冼夫人，她可是周总理亲评的巾帼英雄第一人哦！")
+  ;; (def default-text "Input some Simplified Chinese text here, or click on \"Read a random text\"!")
 
 (defn get-random-text
   [handler]
   (GET "/api/random"
-       :handler #(handler (get % "text")))
-
-
-  (def default-text "说到古代的巾帼英雄，大家可能首先想到的是穆桂英、花木兰之类的，但这些多数都是演义小说塑造出了的。当然，真实的历史上的巾帼英雄也不是没有，比如冼夫人，她可是周总理亲评的巾帼英雄第一人哦！"))
+       :handler #(handler (get % "text"))))
 
 (def mtones {"1" "first" "2" "second" "3" "third" "4" "fourth" "5" "neutral" nil ""})
 
@@ -176,9 +173,10 @@
     (fn []
       [:div#textarea-container
        [:div.field
-        [:label.label.has-text-centered "Try me!"]
+        [:label.label.has-text-centered "Try it: input some simplified Chinese below"]
         [:div.control>textarea.textarea
-         {:default-value default-text
+         {:placeholder default-text
+          :autofocus true
           :rows 13}]]
        [:div#button-container.has-text-centered
         [:div.field>div.control>a.button.is-danger

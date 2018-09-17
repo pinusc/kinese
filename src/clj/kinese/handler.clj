@@ -19,7 +19,7 @@
    [:div#no-js.modal.is-active
     {:style "background-color: #276cda;"}
     [:div.modal-content
-     [:img {:src "/logo.svg"}]]]])
+     [:h1.title.is-2 {:style "color: white;"} "Kinese"]]]])
 
 (defn head []
   [:head
