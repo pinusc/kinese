@@ -1,6 +1,6 @@
 (def figwheel-version "0.5.15")
 (def environ-version "1.1.0")
-(defproject kinese "0.1.0-SNAPSHOT"
+(defproject kinese "0.1.0-ALPHA"
   :description "A reading helper with interactive interlinear dictionary for different languages"
   :url "http://example.com/FIXME"
   :license {:name "GNU General Public License Version 3"
